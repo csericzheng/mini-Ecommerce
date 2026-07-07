@@ -1,9 +1,12 @@
 node_modules/
 db/*.sqlite3
-db/*.db
 db/*.db-shm
 db/*.db-wal
 public/images/boats/boat-*.svg
-public/images/boats/real/
 .env
 npm-debug.log*
+
+# db/miniecommerce.db and public/images/boats/real/ ARE committed on purpose:
+# they ship the site pre-seeded with real photos so it runs on a fresh
+# clone or a hosting platform with zero setup (no Pexels key, no local
+# photo folder needed at deploy time).

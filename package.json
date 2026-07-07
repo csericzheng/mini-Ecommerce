@@ -11,7 +11,7 @@
     "import-crownline": "node scripts/import-crownline.js"
   },
   "engines": {
-    "node": ">=22.5.0"
+    "node": ">=24.0.0"
   },
   "dependencies": {
     "ejs": "^3.1.10",
