@@ -176,7 +176,7 @@ main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
   letter-spacing: 0.02em;
 }
 .badge-new { background: var(--success); }
-.badge-sold { background: var(--danger); left: auto; right: 0.5rem; }
+.badge-sold { background: var(--danger); }
 
 .btn {
   display: inline-block;
