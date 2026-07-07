@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'Mini Boat Shop' %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">⚓ Mini Boat Shop</a>
+    <nav>
+      <a href="/">Catalog</a>
+      <a href="/admin">Admin</a>
+      <a href="/cart">Cart<% if (cartCount > 0) { %><span class="cart-badge"><%= cartCount %></span><% } %></a>
+    </nav>
+  </header>
+  <main>

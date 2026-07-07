@@ -1,0 +1,8 @@
+node_modules/
+db/*.sqlite3
+db/*.db
+db/*.db-shm
+db/*.db-wal
+public/images/boats/boat-*.svg
+.env
+npm-debug.log*

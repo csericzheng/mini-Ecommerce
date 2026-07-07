@@ -1,0 +1,43 @@
+<%- include('partials/header') %>
+
+<h1>Boats for Sale</h1>
+
+<form class="filters" method="get" action="/">
+  <select name="type" onchange="this.form.submit()">
+    <option value="">All types</option>
+    <% types.forEach(function(t) { %>
+      <option value="<%= t %>" <%= t === selectedType ? 'selected' : '' %>><%= t %></option>
+    <% }); %>
+  </select>
+  <input type="text" name="q" placeholder="Search by name or manufacturer" value="<%= q %>">
+  <button class="btn small" type="submit">Search</button>
+  <% if (selectedType || q) { %><a href="/">Clear filters</a><% } %>
+</form>
+
+<% if (boats.length === 0) { %>
+  <p class="empty-state">No boats match your search.</p>
+<% } else { %>
+  <div class="boat-grid">
+    <% boats.forEach(function(boat) { %>
+      <div class="boat-card">
+        <a href="/boats/<%= boat.id %>"><img src="/images/boats/<%= boat.image_file %>" alt="<%= boat.name %>"></a>
+        <div class="boat-card-body">
+          <h3><a href="/boats/<%= boat.id %>"><%= boat.name %></a></h3>
+          <div class="meta"><%= boat.type %> · <%= boat.length_ft %> ft · <%= boat.year %></div>
+          <div class="price"><%= formatPrice(boat.price_cents) %></div>
+          <% if (boat.stock <= 0) { %>
+            <div class="out-of-stock">Out of stock</div>
+          <% } else { %>
+            <form method="post" action="/cart/add">
+              <input type="hidden" name="boatId" value="<%= boat.id %>">
+              <input type="hidden" name="quantity" value="1">
+              <button class="btn small" type="submit">Add to cart</button>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+<% } %>
+
+<%- include('partials/footer') %>

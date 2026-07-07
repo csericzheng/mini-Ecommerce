@@ -1,0 +1,33 @@
+<%- include('partials/header') %>
+
+<h1>Checkout</h1>
+
+<table class="cart-table">
+  <thead><tr><th>Boat</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead>
+  <tbody>
+    <% items.forEach(function(item) { %>
+      <tr>
+        <td><%= item.name %></td>
+        <td><%= formatPrice(item.price_cents) %></td>
+        <td><%= item.quantity %></td>
+        <td><%= formatPrice(item.price_cents * item.quantity) %></td>
+      </tr>
+    <% }); %>
+  </tbody>
+</table>
+<div class="cart-total">Total: <%= formatPrice(total_cents) %></div>
+
+<form class="stacked-form" method="post" action="/cart/checkout">
+  <label>
+    Full name
+    <input type="text" name="customerName" required>
+  </label>
+  <label>
+    Email
+    <input type="email" name="customerEmail" required>
+  </label>
+  <p style="color: var(--muted); font-size: 0.85rem;">This is a demo checkout — no real payment is processed.</p>
+  <button class="btn" type="submit">Place order</button>
+</form>
+
+<%- include('partials/footer') %>

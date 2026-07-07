@@ -1,0 +1,31 @@
+<%- include('../partials/header') %>
+
+<div class="page-heading">
+  <h1>Admin: Boats</h1>
+  <a class="btn" href="/admin/new">+ Add boat</a>
+</div>
+
+<table class="admin-table">
+  <thead>
+    <tr><th>ID</th><th>Name</th><th>Type</th><th>Price</th><th>Stock</th><th></th></tr>
+  </thead>
+  <tbody>
+    <% boats.forEach(function(boat) { %>
+      <tr>
+        <td><%= boat.id %></td>
+        <td><a href="/boats/<%= boat.id %>"><%= boat.name %></a></td>
+        <td><%= boat.type %></td>
+        <td><%= formatPrice(boat.price_cents) %></td>
+        <td><%= boat.stock %></td>
+        <td>
+          <a class="btn small secondary" href="/admin/<%= boat.id %>/edit">Edit</a>
+          <form method="post" action="/admin/<%= boat.id %>/delete" style="display:inline" onsubmit="return confirm('Delete <%= boat.name %>?');">
+            <button class="btn small danger" type="submit">Delete</button>
+          </form>
+        </td>
+      </tr>
+    <% }); %>
+  </tbody>
+</table>
+
+<%- include('../partials/footer') %>

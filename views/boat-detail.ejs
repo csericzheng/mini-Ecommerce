@@ -1,0 +1,35 @@
+<%- include('partials/header') %>
+
+<p><a href="/">&larr; Back to catalog</a></p>
+
+<div class="detail-page">
+  <img src="/images/boats/<%= boat.image_file %>" alt="<%= boat.name %>">
+  <div>
+    <h1><%= boat.name %></h1>
+    <div class="price"><%= formatPrice(boat.price_cents) %></div>
+    <ul class="spec-list">
+      <li><strong>Type:</strong> <%= boat.type %></li>
+      <li><strong>Manufacturer:</strong> <%= boat.manufacturer %></li>
+      <li><strong>Year:</strong> <%= boat.year %></li>
+      <li><strong>Length:</strong> <%= boat.length_ft %> ft</li>
+      <li><strong>Capacity:</strong> <%= boat.capacity %> people</li>
+      <li><strong>Stock:</strong> <%= boat.stock > 0 ? boat.stock + ' available' : 'Out of stock' %></li>
+    </ul>
+    <p><%= boat.description %></p>
+
+    <% if (boat.stock > 0) { %>
+      <form method="post" action="/cart/add">
+        <input type="hidden" name="boatId" value="<%= boat.id %>">
+        <label>
+          Quantity
+          <input class="qty-input" type="number" name="quantity" value="1" min="1" max="<%= boat.stock %>">
+        </label>
+        <button class="btn" type="submit">Add to cart</button>
+      </form>
+    <% } else { %>
+      <button class="btn" disabled>Out of stock</button>
+    <% } %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

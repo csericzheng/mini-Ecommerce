@@ -1,0 +1,46 @@
+<%- include('partials/header') %>
+
+<h1>Your Cart</h1>
+
+<% if (items.length === 0) { %>
+  <p class="empty-state">Your cart is empty. <a href="/">Browse boats</a></p>
+<% } else { %>
+  <table class="cart-table">
+    <thead>
+      <tr><th>Boat</th><th>Price</th><th>Quantity</th><th>Subtotal</th><th></th></tr>
+    </thead>
+    <tbody>
+      <% items.forEach(function(item) { %>
+        <tr>
+          <td>
+            <img src="/images/boats/<%= item.image_file %>" alt="<%= item.name %>">
+            <%= item.name %>
+          </td>
+          <td><%= formatPrice(item.price_cents) %></td>
+          <td>
+            <form method="post" action="/cart/update" style="display:flex; gap:0.5rem; align-items:center;">
+              <input type="hidden" name="boatId" value="<%= item.boatId %>">
+              <input class="qty-input" type="number" name="quantity" value="<%= item.quantity %>" min="0">
+              <button class="btn small secondary" type="submit">Update</button>
+            </form>
+          </td>
+          <td><%= formatPrice(item.price_cents * item.quantity) %></td>
+          <td>
+            <form method="post" action="/cart/remove">
+              <input type="hidden" name="boatId" value="<%= item.boatId %>">
+              <button class="btn small danger" type="submit">Remove</button>
+            </form>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <div class="cart-total">Total: <%= formatPrice(total_cents) %></div>
+  <div class="actions-row">
+    <a class="btn secondary" href="/">Continue shopping</a>
+    <a class="btn" href="/cart/checkout">Checkout</a>
+  </div>
+<% } %>
+
+<%- include('partials/footer') %>
