@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const path = require('path');
 
+const db = require('./db/database');
 const boatsRouter = require('./routes/boats');
 const cartRouter = require('./routes/cart');
 const adminRouter = require('./routes/admin');
@@ -22,12 +23,13 @@ app.use(
   })
 );
 
-// Make cart item count and price formatting available to every view.
+// Make cart item count, price formatting, and the type nav available to every view.
 app.use((req, res, next) => {
   const cart = req.session.cart || {};
   res.locals.cartCount = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
   res.locals.formatPrice = (cents) =>
     (cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+  res.locals.navTypes = db.prepare('SELECT DISTINCT type FROM boats ORDER BY type').all().map((r) => r.type);
   next();
 });
 

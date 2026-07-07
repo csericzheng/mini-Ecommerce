@@ -7,12 +7,17 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <header class="site-header">
+  <div class="utility-bar">
     <a class="brand" href="/">⚓ Mini Boat Shop</a>
-    <nav>
-      <a href="/">Catalog</a>
-      <a href="/admin">Admin</a>
+    <nav class="utility-nav">
+      <a href="/admin">Sell a Boat</a>
       <a href="/cart">Cart<% if (cartCount > 0) { %><span class="cart-badge"><%= cartCount %></span><% } %></a>
     </nav>
-  </header>
+  </div>
+  <nav class="type-nav">
+    <a href="/">All Boats</a>
+    <% navTypes.forEach(function(t) { %>
+      <a href="/?type=<%= encodeURIComponent(t) %>"><%= t %>s</a>
+    <% }); %>
+  </nav>
   <main>

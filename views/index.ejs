@@ -1,69 +1,79 @@
 <%- include('partials/header') %>
 
-<h1>Boats for Sale</h1>
+<section class="hero-search">
+  <h1>Search Boats For Sale</h1>
+  <form class="filters" method="get" action="/">
+    <label>
+      Type
+      <select name="type">
+        <option value="">All types</option>
+        <% types.forEach(function(t) { %>
+          <option value="<%= t %>" <%= t === selectedType ? 'selected' : '' %>><%= t %></option>
+        <% }); %>
+      </select>
+    </label>
 
-<form class="filters" method="get" action="/">
-  <label>
-    Type
-    <select name="type">
-      <option value="">All types</option>
-      <% types.forEach(function(t) { %>
-        <option value="<%= t %>" <%= t === selectedType ? 'selected' : '' %>><%= t %></option>
-      <% }); %>
-    </select>
-  </label>
+    <label>
+      Make
+      <select name="make">
+        <option value="">All makes</option>
+        <% makes.forEach(function(m) { %>
+          <option value="<%= m %>" <%= m === selectedMake ? 'selected' : '' %>><%= m %></option>
+        <% }); %>
+      </select>
+    </label>
 
-  <label>
-    Make
-    <select name="make">
-      <option value="">All makes</option>
-      <% makes.forEach(function(m) { %>
-        <option value="<%= m %>" <%= m === selectedMake ? 'selected' : '' %>><%= m %></option>
-      <% }); %>
-    </select>
-  </label>
+    <label>
+      Year from
+      <input type="number" name="yearMin" placeholder="<%= bounds.minYear %>" min="<%= bounds.minYear %>" max="<%= bounds.maxYear %>" value="<%= yearMin %>">
+    </label>
+    <label>
+      Year to
+      <input type="number" name="yearMax" placeholder="<%= bounds.maxYear %>" min="<%= bounds.minYear %>" max="<%= bounds.maxYear %>" value="<%= yearMax %>">
+    </label>
 
-  <label>
-    Year from
-    <input type="number" name="yearMin" placeholder="<%= bounds.minYear %>" min="<%= bounds.minYear %>" max="<%= bounds.maxYear %>" value="<%= yearMin %>">
-  </label>
-  <label>
-    Year to
-    <input type="number" name="yearMax" placeholder="<%= bounds.maxYear %>" min="<%= bounds.minYear %>" max="<%= bounds.maxYear %>" value="<%= yearMax %>">
-  </label>
+    <label>
+      Price from
+      <input type="number" name="priceMin" placeholder="<%= Math.floor(bounds.minPrice / 100) %>" min="0" step="1000" value="<%= priceMin %>">
+    </label>
+    <label>
+      Price to
+      <input type="number" name="priceMax" placeholder="<%= Math.ceil(bounds.maxPrice / 100) %>" min="0" step="1000" value="<%= priceMax %>">
+    </label>
 
-  <label>
-    Price from
-    <input type="number" name="priceMin" placeholder="<%= Math.floor(bounds.minPrice / 100) %>" min="0" step="1000" value="<%= priceMin %>">
-  </label>
-  <label>
-    Price to
-    <input type="number" name="priceMax" placeholder="<%= Math.ceil(bounds.maxPrice / 100) %>" min="0" step="1000" value="<%= priceMax %>">
-  </label>
+    <label class="search-field">
+      Keyword
+      <input type="text" name="q" placeholder="Name or manufacturer" value="<%= q %>">
+    </label>
 
-  <label>
-    Search
-    <input type="text" name="q" placeholder="Name or manufacturer" value="<%= q %>">
-  </label>
+    <button class="btn search-btn" type="submit"><span class="icon-search" aria-hidden="true"></span> Search</button>
+    <% if (selectedType || selectedMake || q || yearMin || yearMax || priceMin || priceMax) { %><a class="clear-filters" href="/">Clear filters</a><% } %>
+  </form>
+</section>
 
-  <button class="btn small" type="submit">Apply filters</button>
-  <% if (selectedType || selectedMake || q || yearMin || yearMax || priceMin || priceMax) { %><a href="/">Clear filters</a><% } %>
-</form>
+<div class="results-heading">
+  <h2><%= boats.length %> Boat<%= boats.length === 1 ? '' : 's' %> For Sale</h2>
+</div>
 
 <% if (boats.length === 0) { %>
   <p class="empty-state">No boats match your search.</p>
 <% } else { %>
   <div class="boat-grid">
-    <% boats.forEach(function(boat) { %>
+    <% boats.forEach(function(boat) {
+      var daysListed = Math.max(0, Math.floor((Date.now() - new Date(boat.created_at.replace(' ', 'T') + 'Z').getTime()) / 86400000));
+    %>
       <div class="boat-card">
-        <a href="/boats/<%= boat.id %>"><img src="/images/boats/<%= boat.cover_image %>" alt="<%= boat.name %>"></a>
+        <a class="boat-card-image" href="/boats/<%= boat.id %>">
+          <img src="/images/boats/<%= boat.cover_image %>" alt="<%= boat.name %>">
+          <% if (daysListed <= 3) { %><span class="badge badge-new">New Listing</span><% } %>
+          <% if (boat.stock <= 0) { %><span class="badge badge-sold">Out of Stock</span><% } %>
+        </a>
         <div class="boat-card-body">
-          <h3><a href="/boats/<%= boat.id %>"><%= boat.name %></a></h3>
-          <div class="meta"><%= boat.type %> · <%= boat.length_ft %> ft · <%= boat.year %></div>
           <div class="price"><%= formatPrice(boat.price_cents) %></div>
-          <% if (boat.stock <= 0) { %>
-            <div class="out-of-stock">Out of stock</div>
-          <% } else { %>
+          <h3><a href="/boats/<%= boat.id %>"><%= boat.name %></a></h3>
+          <div class="spec-line"><%= boat.type %> · <%= boat.length_ft %> ft · <%= boat.year %></div>
+          <div class="meta-line">Listed <%= daysListed === 0 ? 'today' : daysListed + 'd ago' %> · <%= boat.views %> views</div>
+          <% if (boat.stock > 0) { %>
             <form method="post" action="/cart/add">
               <input type="hidden" name="boatId" value="<%= boat.id %>">
               <input type="hidden" name="quantity" value="1">
