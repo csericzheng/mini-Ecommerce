@@ -67,6 +67,12 @@ router.get('/boats/:id', (req, res) => {
   const boat = db.prepare('SELECT * FROM boats WHERE id = ?').get(req.params.id);
   if (!boat) return res.status(404).render('404');
 
+  db.prepare('UPDATE boats SET views = views + 1 WHERE id = ?').run(boat.id);
+  boat.views += 1;
+
+  const listedDate = new Date(boat.created_at.replace(' ', 'T') + 'Z');
+  const daysListed = Math.max(0, Math.floor((Date.now() - listedDate.getTime()) / 86400000));
+
   const images = db.prepare('SELECT * FROM boat_images WHERE boat_id = ? ORDER BY position').all(boat.id);
   const gallery = images.length > 0
     ? images.map((img) => ({
@@ -76,7 +82,7 @@ router.get('/boats/:id', (req, res) => {
       }))
     : [{ file: boat.image_file, photographer: null, photographer_url: null }];
 
-  res.render('boat-detail', { boat, gallery });
+  res.render('boat-detail', { boat, gallery, daysListed });
 });
 
 module.exports = router;

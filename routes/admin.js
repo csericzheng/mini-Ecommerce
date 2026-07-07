@@ -21,7 +21,11 @@ function boatFromForm(body) {
 }
 
 router.get('/', (req, res) => {
-  const boats = db.prepare('SELECT * FROM boats ORDER BY id').all();
+  const boats = db.prepare('SELECT * FROM boats ORDER BY id').all().map((boat) => {
+    const listedDate = new Date(boat.created_at.replace(' ', 'T') + 'Z');
+    const daysListed = Math.max(0, Math.floor((Date.now() - listedDate.getTime()) / 86400000));
+    return { ...boat, daysListed };
+  });
   res.render('admin/index', { boats });
 });
 

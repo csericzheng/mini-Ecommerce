@@ -7,7 +7,7 @@
 
 <table class="admin-table">
   <thead>
-    <tr><th>ID</th><th>Name</th><th>Type</th><th>Price</th><th>Stock</th><th></th></tr>
+    <tr><th>ID</th><th>Name</th><th>Type</th><th>Price</th><th>Stock</th><th>Views</th><th>Days Listed</th><th></th></tr>
   </thead>
   <tbody>
     <% boats.forEach(function(boat) { %>
@@ -17,6 +17,8 @@
         <td><%= boat.type %></td>
         <td><%= formatPrice(boat.price_cents) %></td>
         <td><%= boat.stock %></td>
+        <td><%= boat.views %></td>
+        <td><%= boat.daysListed %></td>
         <td>
           <a class="btn small secondary" href="/admin/<%= boat.id %>/edit">Edit</a>
           <form method="post" action="/admin/<%= boat.id %>/delete" style="display:inline" onsubmit="return confirm('Delete <%= boat.name %>?');">

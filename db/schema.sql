@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS boats (
   stock INTEGER NOT NULL DEFAULT 1,
   description TEXT NOT NULL,
   image_file TEXT NOT NULL,
+  views INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
