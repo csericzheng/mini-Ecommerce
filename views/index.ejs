@@ -3,15 +3,51 @@
 <h1>Boats for Sale</h1>
 
 <form class="filters" method="get" action="/">
-  <select name="type" onchange="this.form.submit()">
-    <option value="">All types</option>
-    <% types.forEach(function(t) { %>
-      <option value="<%= t %>" <%= t === selectedType ? 'selected' : '' %>><%= t %></option>
-    <% }); %>
-  </select>
-  <input type="text" name="q" placeholder="Search by name or manufacturer" value="<%= q %>">
-  <button class="btn small" type="submit">Search</button>
-  <% if (selectedType || q) { %><a href="/">Clear filters</a><% } %>
+  <label>
+    Type
+    <select name="type">
+      <option value="">All types</option>
+      <% types.forEach(function(t) { %>
+        <option value="<%= t %>" <%= t === selectedType ? 'selected' : '' %>><%= t %></option>
+      <% }); %>
+    </select>
+  </label>
+
+  <label>
+    Make
+    <select name="make">
+      <option value="">All makes</option>
+      <% makes.forEach(function(m) { %>
+        <option value="<%= m %>" <%= m === selectedMake ? 'selected' : '' %>><%= m %></option>
+      <% }); %>
+    </select>
+  </label>
+
+  <label>
+    Year from
+    <input type="number" name="yearMin" placeholder="<%= bounds.minYear %>" min="<%= bounds.minYear %>" max="<%= bounds.maxYear %>" value="<%= yearMin %>">
+  </label>
+  <label>
+    Year to
+    <input type="number" name="yearMax" placeholder="<%= bounds.maxYear %>" min="<%= bounds.minYear %>" max="<%= bounds.maxYear %>" value="<%= yearMax %>">
+  </label>
+
+  <label>
+    Price from
+    <input type="number" name="priceMin" placeholder="<%= Math.floor(bounds.minPrice / 100) %>" min="0" step="1000" value="<%= priceMin %>">
+  </label>
+  <label>
+    Price to
+    <input type="number" name="priceMax" placeholder="<%= Math.ceil(bounds.maxPrice / 100) %>" min="0" step="1000" value="<%= priceMax %>">
+  </label>
+
+  <label>
+    Search
+    <input type="text" name="q" placeholder="Name or manufacturer" value="<%= q %>">
+  </label>
+
+  <button class="btn small" type="submit">Apply filters</button>
+  <% if (selectedType || selectedMake || q || yearMin || yearMax || priceMin || priceMax) { %><a href="/">Clear filters</a><% } %>
 </form>
 
 <% if (boats.length === 0) { %>
