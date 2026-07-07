@@ -31,7 +31,7 @@ const TYPE_INFO = {
   Speedboat: { manufacturers: ['MasterCraft', 'Malibu', 'Yamaha', 'Chaparral'], lengthRange: [18, 24], capacityRange: [4, 8], basePrice: 42000, perFoot: 3400, color: ['#7a1f2b', '#c94c4c'] },
   Houseboat: { manufacturers: ['Sumerset', 'Fantasy', 'Stardust'], lengthRange: [45, 60], capacityRange: [8, 12], basePrice: 220000, perFoot: 6500, color: ['#6b4f1d', '#c9a24c'] },
   'Bass Boat': { manufacturers: ['Tracker', 'Lund', 'Ranger'], lengthRange: [16, 21], capacityRange: [2, 4], basePrice: 24000, perFoot: 2400, color: ['#1f4d2b', '#4c9c5f'] },
-  'Cabin Cruiser': { manufacturers: ['Bayliner', 'Sea Ray', 'Chaparral'], lengthRange: [26, 38], capacityRange: [6, 10], basePrice: 65000, perFoot: 4200, color: ['#33475b', '#6b8ba4'] },
+  'Cabin Cruiser': { manufacturers: ['Bayliner', 'Sea Ray', 'Chaparral', 'Crownline'], lengthRange: [26, 38], capacityRange: [6, 10], basePrice: 65000, perFoot: 4200, color: ['#33475b', '#6b8ba4'] },
 };
 
 const SERIES_WORDS = ['SLX', 'Element', 'Overnighter', 'Voyager', 'Classic', 'Sport', 'Deluxe', 'Signature', 'Limited', 'Cruiser', 'Explorer', 'Adventure', 'Prestige', 'Legacy', 'Horizon', 'Coastal', 'Marina', 'Regatta'];
