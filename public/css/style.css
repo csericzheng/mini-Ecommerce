@@ -106,8 +106,17 @@ main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
 .btn:disabled { background: var(--muted); cursor: not-allowed; }
 
 .detail-page { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-.detail-page img { width: 100%; border-radius: 10px; }
 .detail-page h1 { margin-top: 0; }
+
+.gallery #mainImage { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; display: block; }
+.thumb-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem; margin-top: 0.5rem; }
+.thumb-strip .thumb {
+  width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 6px;
+  cursor: pointer; opacity: 0.65; border: 2px solid transparent; transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+.thumb-strip .thumb:hover { opacity: 0.9; }
+.thumb-strip .thumb.active { opacity: 1; border-color: var(--accent); }
+.photo-credit { font-size: 0.78rem; color: var(--muted); margin: 0.5rem 0 0; }
 .spec-list { list-style: none; padding: 0; margin: 1rem 0; color: var(--muted); }
 .spec-list li { padding: 0.25rem 0; }
 .spec-list strong { color: var(--text); }

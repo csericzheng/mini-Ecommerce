@@ -3,7 +3,29 @@
 <p><a href="/">&larr; Back to catalog</a></p>
 
 <div class="detail-page">
-  <img src="/images/boats/<%= boat.image_file %>" alt="<%= boat.name %>">
+  <div class="gallery">
+    <img id="mainImage" src="/images/boats/<%= gallery[0].file %>" alt="<%= boat.name %>">
+    <% if (gallery.length > 1) { %>
+      <div class="thumb-strip">
+        <% gallery.forEach(function(img, i) { %>
+          <img
+            class="thumb <%= i === 0 ? 'active' : '' %>"
+            src="/images/boats/<%= img.file %>"
+            alt="<%= boat.name %> photo <%= i + 1 %>"
+            data-full="/images/boats/<%= img.file %>"
+            data-photographer="<%= img.photographer || '' %>"
+            data-photographer-url="<%= img.photographer_url || '' %>"
+            onclick="selectBoatImage(this)"
+          >
+        <% }); %>
+      </div>
+    <% } %>
+    <p id="photoCredit" class="photo-credit">
+      <% if (gallery[0].photographer) { %>
+        Photo by <a href="<%= gallery[0].photographer_url %>" target="_blank" rel="noopener"><%= gallery[0].photographer %></a> on Pexels
+      <% } %>
+    </p>
+  </div>
   <div>
     <h1><%= boat.name %></h1>
     <div class="price"><%= formatPrice(boat.price_cents) %></div>
@@ -31,5 +53,22 @@
     <% } %>
   </div>
 </div>
+
+<% if (gallery.length > 1) { %>
+<script>
+  function selectBoatImage(el) {
+    document.getElementById('mainImage').src = el.dataset.full;
+    document.querySelectorAll('.thumb').forEach(function (t) { t.classList.remove('active'); });
+    el.classList.add('active');
+
+    var credit = document.getElementById('photoCredit');
+    if (el.dataset.photographer) {
+      credit.innerHTML = 'Photo by <a href="' + el.dataset.photographerUrl + '" target="_blank" rel="noopener">' + el.dataset.photographer + '</a> on Pexels';
+    } else {
+      credit.innerHTML = '';
+    }
+  }
+</script>
+<% } %>
 
 <%- include('partials/footer') %>

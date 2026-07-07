@@ -4,5 +4,6 @@ db/*.db
 db/*.db-shm
 db/*.db-wal
 public/images/boats/boat-*.svg
+public/images/boats/real/
 .env
 npm-debug.log*

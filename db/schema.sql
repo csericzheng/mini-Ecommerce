@@ -13,6 +13,17 @@ CREATE TABLE IF NOT EXISTS boats (
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+CREATE TABLE IF NOT EXISTS boat_images (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  boat_id INTEGER NOT NULL REFERENCES boats(id) ON DELETE CASCADE,
+  position INTEGER NOT NULL,
+  filename TEXT NOT NULL,
+  photographer TEXT,
+  photographer_url TEXT,
+  source_url TEXT,
+  UNIQUE(boat_id, position)
+);
+
 CREATE TABLE IF NOT EXISTS orders (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   customer_name TEXT NOT NULL,

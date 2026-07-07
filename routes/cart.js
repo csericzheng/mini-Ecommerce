@@ -9,7 +9,13 @@ function getCart(req) {
 }
 
 router.post('/add', (req, res) => {
-  const boat = db.prepare('SELECT * FROM boats WHERE id = ?').get(req.body.boatId);
+  const boat = db.prepare(`
+    SELECT boats.*, COALESCE(
+      (SELECT filename FROM boat_images WHERE boat_id = boats.id ORDER BY position LIMIT 1),
+      boats.image_file
+    ) AS cover_image
+    FROM boats WHERE id = ?
+  `).get(req.body.boatId);
   if (!boat) return res.status(404).render('404');
 
   const quantity = Math.max(1, parseInt(req.body.quantity, 10) || 1);
@@ -20,7 +26,7 @@ router.post('/add', (req, res) => {
     boatId: boat.id,
     name: boat.name,
     price_cents: boat.price_cents,
-    image_file: boat.image_file,
+    image_file: boat.cover_image,
     quantity: Math.min(boat.stock, existingQty + quantity),
   };
 
