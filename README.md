@@ -22,9 +22,10 @@ A small e-commerce demo selling 50 boats, built with Node.js, Express, EJS, and 
 
 ```bash
 npm install
-npm run seed          # generates the SQLite DB and 50 boat listings
-npm run fetch-images   # downloads ~10 real photos per boat from Pexels (needs PEXELS_API_KEY)
-npm start              # http://localhost:3000
+npm run seed             # generates the SQLite DB and 50 boat listings
+npm run fetch-images      # downloads ~10 real photos per boat from Pexels (needs PEXELS_API_KEY)
+npm run import-crownline   # adds the real Crownline 264CR listing with its own photos
+npm start                   # http://localhost:3000
 ```
 
 `fetch-images` requires a free Pexels API key. Create a `.env` file in the project root:
@@ -50,6 +51,7 @@ db/schema.sql             SQLite table definitions (boats, boat_images, orders, 
 db/database.js             DB connection, applies schema on boot
 scripts/seed.js             Generates 50 boats + fallback placeholder SVGs
 scripts/fetch-images.js      Downloads real boat photos from Pexels into boat_images
+scripts/import-crownline.js   Adds/updates the Crownline 264CR listing from local HEIC/JPEG photos
 routes/boats.js              Catalog + boat detail routes
 routes/cart.js                Cart + checkout routes
 routes/admin.js                Admin CRUD routes
@@ -64,3 +66,4 @@ public/                         Static assets (CSS, boat images)
 - The `/admin` panel has no authentication; it's a demo CRUD interface, not production-ready.
 - Boats of the same type share a photo pool (Pexels has no photos of these fictional boat models), but no two boats of the same type get the same set of photos.
 - Photo credit (photographer name + Pexels profile link) is shown on each boat's detail page, per Pexels' attribution guidelines.
+- `npm run seed` wipes and regenerates the entire boats table, which deletes the Crownline 264CR listing (it isn't part of the random seed data). Re-run `npm run import-crownline` afterward to restore it — the script is idempotent and reads its source photos from a local folder path hardcoded at the top of `scripts/import-crownline.js`.
