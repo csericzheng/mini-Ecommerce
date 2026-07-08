@@ -3,6 +3,7 @@ const session = require('express-session');
 const path = require('path');
 
 const db = require('./db/database');
+const authRouter = require('./routes/auth');
 const boatsRouter = require('./routes/boats');
 const cartRouter = require('./routes/cart');
 const adminRouter = require('./routes/admin');
@@ -23,16 +24,21 @@ app.use(
   })
 );
 
-// Make cart item count, price formatting, and the type nav available to every view.
+// Make cart item count, price formatting, the type nav, and the logged-in
+// user (if any) available to every view.
 app.use((req, res, next) => {
   const cart = req.session.cart || {};
   res.locals.cartCount = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
   res.locals.formatPrice = (cents) =>
     (cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
   res.locals.navTypes = db.prepare('SELECT DISTINCT type FROM boats ORDER BY type').all().map((r) => r.type);
+  res.locals.currentUser = req.session.userId
+    ? db.prepare('SELECT id, first_name, last_name, phone, email FROM users WHERE id = ?').get(req.session.userId)
+    : null;
   next();
 });
 
+app.use('/', authRouter);
 app.use('/', boatsRouter);
 app.use('/cart', cartRouter);
 app.use('/admin', adminRouter);

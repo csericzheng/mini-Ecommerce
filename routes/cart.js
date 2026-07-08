@@ -8,7 +8,20 @@ function getCart(req) {
   return req.session.cart;
 }
 
+function requireAuth(req, res, next) {
+  if (!req.session.userId) {
+    const nextUrl = encodeURIComponent(req.originalUrl);
+    return res.redirect(`/login?next=${nextUrl}`);
+  }
+  next();
+}
+
 router.post('/add', (req, res) => {
+  if (!req.session.userId) {
+    const nextUrl = encodeURIComponent(req.get('Referrer') || '/');
+    return res.redirect(`/login?next=${nextUrl}`);
+  }
+
   const boat = db.prepare(`
     SELECT boats.*, COALESCE(
       (SELECT filename FROM boat_images WHERE boat_id = boats.id ORDER BY position LIMIT 1),
@@ -58,7 +71,7 @@ router.get('/', (req, res) => {
   res.render('cart', { items, total_cents });
 });
 
-router.get('/checkout', (req, res) => {
+router.get('/checkout', requireAuth, (req, res) => {
   const cart = getCart(req);
   const items = Object.values(cart);
   if (items.length === 0) return res.redirect('/cart');
@@ -66,18 +79,19 @@ router.get('/checkout', (req, res) => {
   res.render('checkout', { items, total_cents });
 });
 
-router.post('/checkout', (req, res) => {
+router.post('/checkout', requireAuth, (req, res) => {
   const cart = getCart(req);
   const items = Object.values(cart);
   if (items.length === 0) return res.redirect('/cart');
 
-  const { customerName, customerEmail } = req.body;
+  const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.session.userId);
+  const customerName = `${user.first_name} ${user.last_name}`;
   const total_cents = items.reduce((sum, item) => sum + item.price_cents * item.quantity, 0);
 
   const placeOrder = db.transaction(() => {
     const orderInfo = db
-      .prepare('INSERT INTO orders (customer_name, customer_email, total_cents) VALUES (?, ?, ?)')
-      .run(customerName, customerEmail, total_cents);
+      .prepare('INSERT INTO orders (user_id, customer_name, customer_email, total_cents) VALUES (?, ?, ?, ?)')
+      .run(user.id, customerName, user.email, total_cents);
     const orderId = orderInfo.lastInsertRowid;
 
     const insertItem = db.prepare(

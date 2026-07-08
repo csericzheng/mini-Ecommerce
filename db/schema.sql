@@ -25,10 +25,23 @@ CREATE TABLE IF NOT EXISTS boat_images (
   UNIQUE(boat_id, position)
 );
 
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  phone TEXT NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL,
+  date_of_birth TEXT,
+  address TEXT,
+  email TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
 CREATE TABLE IF NOT EXISTS orders (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER REFERENCES users(id),
   customer_name TEXT NOT NULL,
-  customer_email TEXT NOT NULL,
+  customer_email TEXT,
   total_cents INTEGER NOT NULL,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );

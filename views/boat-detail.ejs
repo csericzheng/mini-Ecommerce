@@ -42,14 +42,18 @@
     <p><%= boat.description %></p>
 
     <% if (boat.stock > 0) { %>
-      <form method="post" action="/cart/add">
-        <input type="hidden" name="boatId" value="<%= boat.id %>">
-        <label>
-          Quantity
-          <input class="qty-input" type="number" name="quantity" value="1" min="1" max="<%= boat.stock %>">
-        </label>
-        <button class="btn" type="submit">Add to cart</button>
-      </form>
+      <% if (currentUser) { %>
+        <form method="post" action="/cart/add">
+          <input type="hidden" name="boatId" value="<%= boat.id %>">
+          <label>
+            Quantity
+            <input class="qty-input" type="number" name="quantity" value="1" min="1" max="<%= boat.stock %>">
+          </label>
+          <button class="btn" type="submit">Add to cart</button>
+        </form>
+      <% } else { %>
+        <a class="btn" href="/login?next=<%= encodeURIComponent('/boats/' + boat.id) %>">Log in to add to cart</a>
+      <% } %>
     <% } else { %>
       <button class="btn" disabled>Out of stock</button>
     <% } %>

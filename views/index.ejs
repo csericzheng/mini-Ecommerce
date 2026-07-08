@@ -77,11 +77,15 @@
           <div class="spec-line"><%= boat.type %> · <%= boat.length_ft %> ft · <%= boat.year %></div>
           <div class="meta-line">Listed <%= daysListed === 0 ? 'today' : daysListed + 'd ago' %> · <%= boat.views %> views</div>
           <% if (boat.stock > 0) { %>
-            <form method="post" action="/cart/add">
-              <input type="hidden" name="boatId" value="<%= boat.id %>">
-              <input type="hidden" name="quantity" value="1">
-              <button class="btn small" type="submit">Add to cart</button>
-            </form>
+            <% if (currentUser) { %>
+              <form method="post" action="/cart/add">
+                <input type="hidden" name="boatId" value="<%= boat.id %>">
+                <input type="hidden" name="quantity" value="1">
+                <button class="btn small" type="submit">Add to cart</button>
+              </form>
+            <% } else { %>
+              <a class="btn small secondary" href="/login?next=<%= encodeURIComponent('/') %>">Log in to add to cart</a>
+            <% } %>
           <% } %>
         </div>
       </div>

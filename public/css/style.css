@@ -40,6 +40,13 @@ a:hover { text-decoration: underline; }
 .utility-nav { display: flex; align-items: center; gap: 1.25rem; }
 .utility-nav a { color: #d7e4ee; font-size: 0.9rem; }
 .utility-nav a:hover { color: white; }
+.utility-nav .utility-user { color: white; font-size: 0.9rem; font-weight: 600; }
+.utility-nav .inline-form { display: inline; }
+.link-btn {
+  background: none; border: none; padding: 0; cursor: pointer;
+  color: #d7e4ee; font-size: 0.9rem; font-family: inherit;
+}
+.link-btn:hover { color: white; text-decoration: underline; }
 
 .type-nav {
   background: white;
@@ -222,6 +229,18 @@ form.stacked-form input, form.stacked-form select, form.stacked-form textarea {
 form.stacked-form textarea { min-height: 90px; resize: vertical; }
 .form-row { display: flex; gap: 0.9rem; }
 .form-row label { flex: 1; }
+
+.form-error {
+  background: #fbeaea; color: var(--danger); border: 1px solid #eecccc;
+  border-radius: 6px; padding: 0.7rem 0.9rem; font-size: 0.9rem; max-width: 600px;
+}
+
+.checkout-customer {
+  background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px;
+  padding: 1rem 1.25rem; max-width: 400px; margin-bottom: 1.25rem;
+}
+.checkout-customer h2 { margin: 0 0 0.5rem; font-size: 1rem; color: var(--navy); }
+.checkout-customer p { margin: 0.2rem 0; color: var(--text); font-size: 0.92rem; }
 
 .cart-table { width: 100%; border-collapse: collapse; }
 .cart-table th, .cart-table td { padding: 0.7rem; border-bottom: 1px solid var(--border); text-align: left; }

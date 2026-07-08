@@ -16,11 +16,16 @@ db.exec('PRAGMA foreign_keys = ON');
 
 db.exec(fs.readFileSync(SCHEMA_PATH, 'utf8'));
 
-// Lightweight migration for DBs created before the `views` column existed.
-// CREATE TABLE IF NOT EXISTS above is a no-op on an existing boats table.
+// Lightweight migrations for DBs created before these columns existed.
+// CREATE TABLE IF NOT EXISTS above is a no-op on an already-existing table.
 const boatColumns = db.prepare("PRAGMA table_info(boats)").all().map((c) => c.name);
 if (!boatColumns.includes('views')) {
   db.exec('ALTER TABLE boats ADD COLUMN views INTEGER NOT NULL DEFAULT 0');
+}
+
+const orderColumns = db.prepare("PRAGMA table_info(orders)").all().map((c) => c.name);
+if (!orderColumns.includes('user_id')) {
+  db.exec('ALTER TABLE orders ADD COLUMN user_id INTEGER REFERENCES users(id)');
 }
 
 // node:sqlite has no built-in transaction helper (unlike better-sqlite3);

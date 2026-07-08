@@ -1,0 +1,24 @@
+<%- include('partials/header') %>
+
+<h1>Log In</h1>
+
+<% if (error) { %><p class="form-error"><%= error %></p><% } %>
+
+<form class="stacked-form" method="post" action="/login">
+  <input type="hidden" name="next" value="<%= next %>">
+
+  <label>
+    Phone number
+    <input type="tel" name="phone" required>
+  </label>
+  <label>
+    Password
+    <input type="password" name="password" required>
+  </label>
+
+  <button class="btn" type="submit">Log In</button>
+</form>
+
+<p>New here? <a href="/register<%= next ? '?next=' + encodeURIComponent(next) : '' %>">Create an account</a></p>
+
+<%- include('partials/footer') %>

@@ -11,6 +11,15 @@
     <a class="brand" href="/">⚓ Mini Boat Shop</a>
     <nav class="utility-nav">
       <a href="/admin">Sell a Boat</a>
+      <% if (currentUser) { %>
+        <span class="utility-user">Hi, <%= currentUser.first_name %></span>
+        <form method="post" action="/logout" class="inline-form">
+          <button class="link-btn" type="submit">Log Out</button>
+        </form>
+      <% } else { %>
+        <a href="/login">Log In</a>
+        <a href="/register">Register</a>
+      <% } %>
       <a href="/cart">Cart<% if (cartCount > 0) { %><span class="cart-badge"><%= cartCount %></span><% } %></a>
     </nav>
   </div>

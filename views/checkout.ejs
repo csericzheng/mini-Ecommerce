@@ -17,15 +17,14 @@
 </table>
 <div class="cart-total">Total: <%= formatPrice(total_cents) %></div>
 
-<form class="stacked-form" method="post" action="/cart/checkout">
-  <label>
-    Full name
-    <input type="text" name="customerName" required>
-  </label>
-  <label>
-    Email
-    <input type="email" name="customerEmail" required>
-  </label>
+<div class="checkout-customer">
+  <h2>Shipping To</h2>
+  <p><%= currentUser.first_name %> <%= currentUser.last_name %></p>
+  <p><%= currentUser.phone %></p>
+  <% if (currentUser.email) { %><p><%= currentUser.email %></p><% } %>
+</div>
+
+<form method="post" action="/cart/checkout">
   <p style="color: var(--muted); font-size: 0.85rem;">This is a demo checkout — no real payment is processed.</p>
   <button class="btn" type="submit">Place order</button>
 </form>

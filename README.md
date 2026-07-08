@@ -6,6 +6,7 @@ A small e-commerce demo selling 50 boats, built with Node.js, Express, EJS, and 
 
 - Catalog page with search and type filtering
 - Boat detail pages with a ~10-photo gallery per boat
+- User registration and login (phone number + password); only logged-in users can add boats to the cart or check out
 - Session-based shopping cart
 - Checkout flow that records orders in SQLite (no real payment processing)
 - Admin panel for creating, editing, and deleting boat listings
@@ -70,16 +71,19 @@ db/database.js             DB connection, applies schema on boot
 scripts/seed.js             Generates 50 boats + fallback placeholder SVGs
 scripts/fetch-images.js      Downloads real boat photos from Pexels into boat_images
 scripts/import-crownline.js   Adds/updates the Crownline 264CR listing from local HEIC/JPEG photos
-routes/boats.js              Catalog + boat detail routes
-routes/cart.js                Cart + checkout routes
-routes/admin.js                Admin CRUD routes
-views/                          EJS templates
-public/                         Static assets (CSS, boat images)
+routes/auth.js                Register/login/logout routes
+routes/boats.js                Catalog + boat detail routes
+routes/cart.js                  Cart + checkout routes (add/checkout require login)
+routes/admin.js                  Admin CRUD routes
+lib/password.js                   Password hashing (Node crypto scrypt, no dependency)
+views/                             EJS templates
+public/                            Static assets (CSS, boat images)
 ```
 
 ## Notes
 
 - The `/admin` panel has no authentication; it's a demo CRUD interface, not production-ready.
+- User accounts require first name, last name, and phone number (used as the login identifier); date of birth, address, and email are optional. Passwords are hashed with Node's built-in `crypto.scryptSync` — there's no CSRF protection, rate limiting, or password reset flow, so treat this as a demo auth system, not production-grade.
 - Boats of the same type share a photo pool (Pexels has no photos of these fictional boat models), but no two boats of the same type get the same set of photos.
 - Photo credit (photographer name + Pexels profile link) is shown on each boat's detail page, per Pexels' attribution guidelines.
 - `npm run seed` wipes and regenerates the entire boats table, which deletes the Crownline 264CR listing (it isn't part of the random seed data). Re-run `npm run import-crownline` afterward to restore it — the script is idempotent and reads its source photos from a local folder path hardcoded at the top of `scripts/import-crownline.js`.

@@ -1,0 +1,55 @@
+<%- include('partials/header') %>
+
+<h1>Create an Account</h1>
+
+<% if (error) { %><p class="form-error"><%= error %></p><% } %>
+
+<form class="stacked-form" method="post" action="/register">
+  <input type="hidden" name="next" value="<%= next %>">
+
+  <div class="form-row">
+    <label>
+      First name
+      <input type="text" name="firstName" value="<%= form.firstName || '' %>" required>
+    </label>
+    <label>
+      Last name
+      <input type="text" name="lastName" value="<%= form.lastName || '' %>" required>
+    </label>
+  </div>
+
+  <label>
+    Phone number
+    <input type="tel" name="phone" value="<%= form.phone || '' %>" required>
+  </label>
+
+  <div class="form-row">
+    <label>
+      Password
+      <input type="password" name="password" minlength="6" required>
+    </label>
+    <label>
+      Confirm password
+      <input type="password" name="confirmPassword" minlength="6" required>
+    </label>
+  </div>
+
+  <label>
+    Date of birth (optional)
+    <input type="date" name="dob" value="<%= form.dob || '' %>">
+  </label>
+  <label>
+    Address (optional)
+    <input type="text" name="address" value="<%= form.address || '' %>">
+  </label>
+  <label>
+    Email (optional)
+    <input type="email" name="email" value="<%= form.email || '' %>">
+  </label>
+
+  <button class="btn" type="submit">Register</button>
+</form>
+
+<p>Already have an account? <a href="/login<%= next ? '?next=' + encodeURIComponent(next) : '' %>">Log in</a></p>
+
+<%- include('partials/footer') %>
