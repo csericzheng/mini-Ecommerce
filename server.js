@@ -29,7 +29,7 @@ app.use(
 // user (if any) available to every view.
 app.use((req, res, next) => {
   const cart = req.session.cart || {};
-  res.locals.cartCount = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
+  res.locals.cartCount = Object.values(cart).length;
   res.locals.formatPrice = (cents) =>
     (cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
   res.locals.navTypes = db.prepare('SELECT DISTINCT type FROM boats ORDER BY type').all().map((r) => r.type);

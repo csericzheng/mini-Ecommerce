@@ -47,14 +47,12 @@
       </p>
     <% } %>
 
-    <% if (boat.stock > 0) { %>
+    <% if (currentUser && currentUser.id === boat.owner_id) { %>
+      <%# owner: no purchase controls on their own listing %>
+    <% } else if (boat.stock > 0) { %>
       <% if (currentUser) { %>
         <form method="post" action="/cart/add">
           <input type="hidden" name="boatId" value="<%= boat.id %>">
-          <label>
-            Quantity
-            <input class="qty-input" type="number" name="quantity" value="1" min="1" max="<%= boat.stock %>">
-          </label>
           <button class="btn" type="submit">Add to cart</button>
         </form>
       <% } else { %>

@@ -3,14 +3,12 @@
 <h1>Checkout</h1>
 
 <table class="cart-table">
-  <thead><tr><th>Boat</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead>
+  <thead><tr><th>Boat</th><th>Price</th></tr></thead>
   <tbody>
     <% items.forEach(function(item) { %>
       <tr>
         <td><%= item.name %></td>
         <td><%= formatPrice(item.price_cents) %></td>
-        <td><%= item.quantity %></td>
-        <td><%= formatPrice(item.price_cents * item.quantity) %></td>
       </tr>
     <% }); %>
   </tbody>

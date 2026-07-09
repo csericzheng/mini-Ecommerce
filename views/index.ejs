@@ -79,11 +79,10 @@
           <h3><a href="/boats/<%= boat.id %>"><%= boat.name %></a></h3>
           <div class="spec-line"><%= boat.type %> · <%= boat.length_ft %> ft · <%= boat.year %></div>
           <div class="meta-line">Listed <%= daysListed === 0 ? 'today' : daysListed + 'd ago' %> · <%= boat.views %> views</div>
-          <% if (boat.stock > 0) { %>
+          <% if (boat.stock > 0 && !(currentUser && currentUser.id === boat.owner_id)) { %>
             <% if (currentUser) { %>
               <form method="post" action="/cart/add">
                 <input type="hidden" name="boatId" value="<%= boat.id %>">
-                <input type="hidden" name="quantity" value="1">
                 <button class="btn small" type="submit">Add to cart</button>
               </form>
             <% } else { %>

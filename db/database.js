@@ -26,9 +26,34 @@ if (!boatColumns.includes('owner_id')) {
   db.exec('ALTER TABLE boats ADD COLUMN owner_id INTEGER REFERENCES users(id)');
 }
 
-const orderColumns = db.prepare("PRAGMA table_info(orders)").all().map((c) => c.name);
+const orderColumnInfo = db.prepare("PRAGMA table_info(orders)").all();
+const orderColumns = orderColumnInfo.map((c) => c.name);
 if (!orderColumns.includes('user_id')) {
   db.exec('ALTER TABLE orders ADD COLUMN user_id INTEGER REFERENCES users(id)');
+}
+
+// Older databases have customer_email as NOT NULL, which breaks checkout
+// for any user without an email on file (email has always been optional at
+// registration). SQLite can't drop a NOT NULL constraint with ALTER TABLE,
+// so rebuild the table to match schema.sql's nullable definition.
+const customerEmailCol = orderColumnInfo.find((c) => c.name === 'customer_email');
+if (customerEmailCol && customerEmailCol.notnull) {
+  db.exec('PRAGMA foreign_keys = OFF');
+  db.exec(`
+    CREATE TABLE orders_new (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER REFERENCES users(id),
+      customer_name TEXT NOT NULL,
+      customer_email TEXT,
+      total_cents INTEGER NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    INSERT INTO orders_new (id, user_id, customer_name, customer_email, total_cents, created_at)
+      SELECT id, user_id, customer_name, customer_email, total_cents, created_at FROM orders;
+    DROP TABLE orders;
+    ALTER TABLE orders_new RENAME TO orders;
+  `);
+  db.exec('PRAGMA foreign_keys = ON');
 }
 
 const userColumns = db.prepare("PRAGMA table_info(users)").all().map((c) => c.name);
