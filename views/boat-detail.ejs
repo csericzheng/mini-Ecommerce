@@ -41,6 +41,12 @@
     </ul>
     <p><%= boat.description %></p>
 
+    <% if (currentUser && (currentUser.role === 'admin' || currentUser.id === boat.owner_id)) { %>
+      <p>
+        <a class="btn secondary" href="<%= currentUser.role === 'admin' ? '/admin/' + boat.id + '/edit' : '/sell/' + boat.id + '/edit' %>">Edit Listing</a>
+      </p>
+    <% } %>
+
     <% if (boat.stock > 0) { %>
       <% if (currentUser) { %>
         <form method="post" action="/cart/add">

@@ -1,0 +1,32 @@
+<%- include('partials/header') %>
+
+<div class="page-heading">
+  <h1>My Boat Listings</h1>
+  <a class="btn" href="/sell/new">+ Sell a boat</a>
+</div>
+
+<% if (boats.length === 0) { %>
+  <p class="empty-state">You haven't listed any boats yet. <a href="/sell/new">List your first boat</a>.</p>
+<% } else { %>
+  <table class="admin-table">
+    <thead>
+      <tr><th>ID</th><th>Name</th><th>Type</th><th>Price</th><th>Stock</th><th>Views</th><th>Days Listed</th><th></th></tr>
+    </thead>
+    <tbody>
+      <% boats.forEach(function(boat) { %>
+        <tr>
+          <td><%= boat.id %></td>
+          <td><a href="/boats/<%= boat.id %>"><%= boat.name %></a></td>
+          <td><%= boat.type %></td>
+          <td><%= formatPrice(boat.price_cents) %></td>
+          <td><%= boat.stock %></td>
+          <td><%= boat.views %></td>
+          <td><%= boat.daysListed %></td>
+          <td><a class="btn small secondary" href="/sell/<%= boat.id %>/edit">Edit</a></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+<% } %>
+
+<%- include('partials/footer') %>

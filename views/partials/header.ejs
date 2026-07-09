@@ -15,6 +15,7 @@
         <a href="/admin/users">Users</a>
       <% } %>
       <% if (currentUser) { %>
+        <a href="/sell">My Listings</a>
         <span class="utility-user">Hi, <%= currentUser.first_name %></span>
         <form method="post" action="/logout" class="inline-form">
           <button class="link-btn" type="submit">Log Out</button>
