@@ -22,10 +22,18 @@ const boatColumns = db.prepare("PRAGMA table_info(boats)").all().map((c) => c.na
 if (!boatColumns.includes('views')) {
   db.exec('ALTER TABLE boats ADD COLUMN views INTEGER NOT NULL DEFAULT 0');
 }
+if (!boatColumns.includes('owner_id')) {
+  db.exec('ALTER TABLE boats ADD COLUMN owner_id INTEGER REFERENCES users(id)');
+}
 
 const orderColumns = db.prepare("PRAGMA table_info(orders)").all().map((c) => c.name);
 if (!orderColumns.includes('user_id')) {
   db.exec('ALTER TABLE orders ADD COLUMN user_id INTEGER REFERENCES users(id)');
+}
+
+const userColumns = db.prepare("PRAGMA table_info(users)").all().map((c) => c.name);
+if (!userColumns.includes('role')) {
+  db.exec("ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'user'");
 }
 
 // node:sqlite has no built-in transaction helper (unlike better-sqlite3);

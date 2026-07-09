@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS boats (
   description TEXT NOT NULL,
   image_file TEXT NOT NULL,
   views INTEGER NOT NULL DEFAULT 0,
+  owner_id INTEGER REFERENCES users(id),
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -34,6 +35,7 @@ CREATE TABLE IF NOT EXISTS users (
   date_of_birth TEXT,
   address TEXT,
   email TEXT,
+  role TEXT NOT NULL DEFAULT 'user',
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 

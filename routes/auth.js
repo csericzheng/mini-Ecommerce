@@ -30,12 +30,18 @@ router.post('/register', (req, res) => {
       .render('register', { error: 'An account with that phone number already exists.', form: req.body, next });
   }
 
+  // The very first account created on a fresh database becomes the admin,
+  // so there's always a way to reach the admin/user-role pages without
+  // manual DB surgery.
+  const isFirstUser = db.prepare('SELECT COUNT(*) AS count FROM users').get().count === 0;
+  const role = isFirstUser ? 'admin' : 'user';
+
   const info = db
     .prepare(
-      `INSERT INTO users (first_name, last_name, phone, password_hash, date_of_birth, address, email)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`
+      `INSERT INTO users (first_name, last_name, phone, password_hash, date_of_birth, address, email, role)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
     )
-    .run(firstName, lastName, phone, hashPassword(password), dob || null, address || null, email || null);
+    .run(firstName, lastName, phone, hashPassword(password), dob || null, address || null, email || null, role);
 
   req.session.userId = info.lastInsertRowid;
   res.redirect(next || '/');

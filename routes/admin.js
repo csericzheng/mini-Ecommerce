@@ -1,30 +1,23 @@
 const express = require('express');
 const db = require('../db/database');
+const { requireAdmin } = require('../lib/middleware');
+const { FIELDS, boatFromForm } = require('../lib/boat-form');
 
 const router = express.Router();
 
-const FIELDS = ['name', 'type', 'manufacturer', 'year', 'length_ft', 'capacity', 'price_cents', 'stock', 'description', 'image_file'];
-
-function boatFromForm(body) {
-  return {
-    name: body.name,
-    type: body.type,
-    manufacturer: body.manufacturer,
-    year: parseInt(body.year, 10),
-    length_ft: parseInt(body.length_ft, 10),
-    capacity: parseInt(body.capacity, 10),
-    price_cents: Math.round(parseFloat(body.price) * 100),
-    stock: parseInt(body.stock, 10),
-    description: body.description,
-    image_file: body.image_file || 'placeholder.svg',
-  };
-}
+router.use(requireAdmin);
 
 router.get('/', (req, res) => {
-  const boats = db.prepare('SELECT * FROM boats ORDER BY id').all().map((boat) => {
+  const boats = db.prepare(`
+    SELECT boats.*, users.first_name AS owner_first_name, users.last_name AS owner_last_name
+    FROM boats
+    LEFT JOIN users ON users.id = boats.owner_id
+    ORDER BY boats.id
+  `).all().map((boat) => {
     const listedDate = new Date(boat.created_at.replace(' ', 'T') + 'Z');
     const daysListed = Math.max(0, Math.floor((Date.now() - listedDate.getTime()) / 86400000));
-    return { ...boat, daysListed };
+    const listedBy = boat.owner_first_name ? `${boat.owner_first_name} ${boat.owner_last_name}` : 'Admin';
+    return { ...boat, daysListed, listedBy };
   });
   res.render('admin/index', { boats });
 });
@@ -57,6 +50,23 @@ router.post('/:id/edit', (req, res) => {
 router.post('/:id/delete', (req, res) => {
   db.prepare('DELETE FROM boats WHERE id = ?').run(req.params.id);
   res.redirect('/admin');
+});
+
+router.get('/users', (req, res) => {
+  const users = db.prepare('SELECT id, first_name, last_name, phone, email, role FROM users ORDER BY id').all();
+  res.render('admin/users', { users, currentUserId: req.session.userId });
+});
+
+router.post('/users/:id/role', (req, res) => {
+  const targetId = parseInt(req.params.id, 10);
+  const { role } = req.body;
+
+  // Prevent an admin from locking themselves out by demoting their own account.
+  if (targetId === req.session.userId) return res.redirect('/admin/users');
+  if (role !== 'admin' && role !== 'user') return res.redirect('/admin/users');
+
+  db.prepare('UPDATE users SET role = ? WHERE id = ?').run(role, targetId);
+  res.redirect('/admin/users');
 });
 
 module.exports = router;

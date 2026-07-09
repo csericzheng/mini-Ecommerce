@@ -1,19 +1,12 @@
 const express = require('express');
 const db = require('../db/database');
+const { requireAuth } = require('../lib/middleware');
 
 const router = express.Router();
 
 function getCart(req) {
   if (!req.session.cart) req.session.cart = {};
   return req.session.cart;
-}
-
-function requireAuth(req, res, next) {
-  if (!req.session.userId) {
-    const nextUrl = encodeURIComponent(req.originalUrl);
-    return res.redirect(`/login?next=${nextUrl}`);
-  }
-  next();
 }
 
 router.post('/add', (req, res) => {

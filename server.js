@@ -7,6 +7,7 @@ const authRouter = require('./routes/auth');
 const boatsRouter = require('./routes/boats');
 const cartRouter = require('./routes/cart');
 const adminRouter = require('./routes/admin');
+const sellRouter = require('./routes/sell');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -33,7 +34,7 @@ app.use((req, res, next) => {
     (cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
   res.locals.navTypes = db.prepare('SELECT DISTINCT type FROM boats ORDER BY type').all().map((r) => r.type);
   res.locals.currentUser = req.session.userId
-    ? db.prepare('SELECT id, first_name, last_name, phone, email FROM users WHERE id = ?').get(req.session.userId)
+    ? db.prepare('SELECT id, first_name, last_name, phone, email, role FROM users WHERE id = ?').get(req.session.userId)
     : null;
   next();
 });
@@ -42,6 +43,7 @@ app.use('/', authRouter);
 app.use('/', boatsRouter);
 app.use('/cart', cartRouter);
 app.use('/admin', adminRouter);
+app.use('/sell', sellRouter);
 
 app.use((req, res) => {
   res.status(404).render('404');
