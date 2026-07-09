@@ -88,7 +88,8 @@ main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
   padding: 1.5rem 1.5rem 1.75rem;
   border-bottom: 1px solid var(--border);
 }
-.hero-search h1 { margin: 0 0 1rem; font-size: 1.4rem; color: var(--navy); }
+.hero-search h1 { margin: 0; font-size: 1.4rem; color: var(--navy); }
+.hero-search-heading { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; }
 
 .filters {
   background: var(--card-bg);
