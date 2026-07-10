@@ -52,6 +52,20 @@ router.post('/:id/delete', (req, res) => {
   res.redirect('/admin');
 });
 
+router.get('/orders', (req, res) => {
+  const orders = db.prepare(`
+    SELECT orders.*, users.phone AS buyer_phone
+    FROM orders
+    LEFT JOIN users ON users.id = orders.user_id
+    ORDER BY orders.id DESC
+  `).all();
+
+  const itemsForOrder = db.prepare('SELECT boat_id, boat_name FROM order_items WHERE order_id = ?');
+  const ordersWithItems = orders.map((order) => ({ ...order, items: itemsForOrder.all(order.id) }));
+
+  res.render('admin/orders', { orders: ordersWithItems });
+});
+
 router.get('/users', (req, res) => {
   const users = db.prepare('SELECT id, first_name, last_name, phone, email, role FROM users ORDER BY id').all();
   res.render('admin/users', { users, currentUserId: req.session.userId });

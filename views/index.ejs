@@ -77,7 +77,7 @@
         <div class="boat-card-body">
           <div class="price"><%= formatPrice(boat.price_cents) %></div>
           <h3><a href="/boats/<%= boat.id %>"><%= boat.name %></a></h3>
-          <div class="spec-line"><%= boat.type %> · <%= boat.length_ft %> ft · <%= boat.year %></div>
+          <div class="spec-line">ID #<%= boat.id %> · <%= boat.type %> · <%= boat.length_ft %> ft · <%= boat.year %></div>
           <div class="meta-line">Listed <%= daysListed === 0 ? 'today' : daysListed + 'd ago' %> · <%= boat.views %> views</div>
           <% if (boat.stock > 0 && !(currentUser && currentUser.id === boat.owner_id)) { %>
             <% if (currentUser) { %>

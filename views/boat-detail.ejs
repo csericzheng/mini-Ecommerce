@@ -30,11 +30,13 @@
     <h1><%= boat.name %></h1>
     <div class="price"><%= formatPrice(boat.price_cents) %></div>
     <ul class="spec-list">
+      <li><strong>Boat ID:</strong> #<%= boat.id %></li>
       <li><strong>Type:</strong> <%= boat.type %></li>
       <li><strong>Manufacturer:</strong> <%= boat.manufacturer %></li>
       <li><strong>Year:</strong> <%= boat.year %></li>
       <li><strong>Length:</strong> <%= boat.length_ft %> ft</li>
       <li><strong>Capacity:</strong> <%= boat.capacity %> people</li>
+      <li><strong>Engine Hours:</strong> <%= boat.engine_hours %> hrs</li>
       <li><strong>Stock:</strong> <%= boat.stock > 0 ? boat.stock + ' available' : 'Out of stock' %></li>
       <li><strong>Listed:</strong> <%= daysListed === 0 ? 'today' : daysListed + ' day' + (daysListed === 1 ? '' : 's') + ' ago' %></li>
       <li><strong>Views:</strong> <%= boat.views %></li>

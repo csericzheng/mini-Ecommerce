@@ -25,6 +25,12 @@ if (!boatColumns.includes('views')) {
 if (!boatColumns.includes('owner_id')) {
   db.exec('ALTER TABLE boats ADD COLUMN owner_id INTEGER REFERENCES users(id)');
 }
+if (!boatColumns.includes('engine_hours')) {
+  db.exec('ALTER TABLE boats ADD COLUMN engine_hours INTEGER NOT NULL DEFAULT 0');
+  // Backfill existing listings with a rough estimate (40 engine hours per
+  // year of age) rather than leaving them all at 0.
+  db.exec(`UPDATE boats SET engine_hours = 40 * MAX(0, CAST(strftime('%Y', 'now') AS INTEGER) - year)`);
+}
 
 const orderColumnInfo = db.prepare("PRAGMA table_info(orders)").all();
 const orderColumns = orderColumnInfo.map((c) => c.name);

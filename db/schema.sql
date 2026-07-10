@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS boats (
   year INTEGER NOT NULL,
   length_ft INTEGER NOT NULL,
   capacity INTEGER NOT NULL,
+  engine_hours INTEGER NOT NULL DEFAULT 0,
   price_cents INTEGER NOT NULL,
   stock INTEGER NOT NULL DEFAULT 1,
   description TEXT NOT NULL,
