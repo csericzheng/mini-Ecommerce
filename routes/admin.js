@@ -14,9 +14,14 @@ const router = express.Router();
 router.use(requireAdmin);
 
 const VALID_STATUSES = ['available', 'pending', 'sold'];
+const VALID_CONDITIONS = ['new', 'used'];
 
 function statusFromForm(body) {
   return VALID_STATUSES.includes(body.status) ? body.status : 'available';
+}
+
+function conditionFromForm(body) {
+  return VALID_CONDITIONS.includes(body.condition) ? body.condition : 'new';
 }
 
 router.get('/', (req, res) => {
@@ -39,9 +44,9 @@ router.get('/new', (req, res) => {
 });
 
 router.post('/new', (req, res) => {
-  const boat = { ...boatFromForm(req.body), status: statusFromForm(req.body) };
-  const columns = [...FIELDS, 'status'].join(', ');
-  const placeholders = [...FIELDS.map((f) => `@${f}`), '@status'].join(', ');
+  const boat = { ...boatFromForm(req.body), status: statusFromForm(req.body), condition: conditionFromForm(req.body) };
+  const columns = [...FIELDS, 'status', 'condition'].join(', ');
+  const placeholders = [...FIELDS.map((f) => `@${f}`), '@status', '@condition'].join(', ');
   db.prepare(`INSERT INTO boats (${columns}) VALUES (${placeholders})`).run(boat);
   res.redirect('/admin');
 });
@@ -53,8 +58,8 @@ router.get('/:id/edit', (req, res) => {
 });
 
 router.post('/:id/edit', (req, res) => {
-  const boat = { ...boatFromForm(req.body), status: statusFromForm(req.body) };
-  const setClause = [...FIELDS, 'status'].map((f) => `${f} = @${f}`).join(', ');
+  const boat = { ...boatFromForm(req.body), status: statusFromForm(req.body), condition: conditionFromForm(req.body) };
+  const setClause = [...FIELDS, 'status', 'condition'].map((f) => `${f} = @${f}`).join(', ');
   db.prepare(`UPDATE boats SET ${setClause} WHERE id = @id`).run({ ...boat, id: req.params.id });
   res.redirect('/admin');
 });

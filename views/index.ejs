@@ -72,7 +72,7 @@
             <span class="badge badge-sold">Sold</span>
           <% } else if (boat.status === 'pending') { %>
             <span class="badge badge-pending">Sale Pending</span>
-          <% } else if (boat.stock <= 0) { %>
+          <% } else if (boat.condition === 'new' && boat.stock <= 0) { %>
             <span class="badge badge-sold">Out of Stock</span>
           <% } else if (daysListed <= 3) { %>
             <span class="badge badge-new">New Listing</span>
@@ -83,7 +83,7 @@
           <h3><a href="/boats/<%= boat.id %>"><%= boat.name %></a></h3>
           <div class="spec-line">ID #<%= boat.id %> · <%= boat.type %> · <%= boat.length_ft %> ft · <%= boat.year %></div>
           <div class="meta-line">Listed <%= daysListed === 0 ? 'today' : daysListed + 'd ago' %> · <%= boat.views %> views</div>
-          <% if (boat.status === 'available' && boat.stock > 0 && !(currentUser && currentUser.id === boat.owner_id)) { %>
+          <% if (boat.status === 'available' && (boat.condition !== 'new' || boat.stock > 0) && !(currentUser && currentUser.id === boat.owner_id)) { %>
             <% if (currentUser) { %>
               <form method="post" action="/cart/add">
                 <input type="hidden" name="boatId" value="<%= boat.id %>">

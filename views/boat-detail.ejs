@@ -37,8 +37,11 @@
       <li><strong>Length:</strong> <%= boat.length_ft %> ft</li>
       <li><strong>Capacity:</strong> <%= boat.capacity %> people</li>
       <li><strong>Engine Hours:</strong> <%= boat.engine_hours %> hrs</li>
+      <li><strong>Condition:</strong> <%= boat.condition === 'new' ? 'New' : 'Used' %></li>
       <li><strong>Status:</strong> <%= boat.status === 'sold' ? 'Sold' : boat.status === 'pending' ? 'Sale Pending' : 'Available' %></li>
-      <li><strong>Stock:</strong> <%= boat.stock > 0 ? boat.stock + ' available' : 'Out of stock' %></li>
+      <% if (boat.condition === 'new') { %>
+        <li><strong>Stock:</strong> <%= boat.stock > 0 ? boat.stock + ' available' : 'Out of stock' %></li>
+      <% } %>
       <li><strong>Listed:</strong> <%= daysListed === 0 ? 'today' : daysListed + ' day' + (daysListed === 1 ? '' : 's') + ' ago' %></li>
       <li><strong>Views:</strong> <%= boat.views %></li>
     </ul>
@@ -56,7 +59,7 @@
       <button class="btn" disabled>Sold</button>
     <% } else if (boat.status === 'pending') { %>
       <button class="btn" disabled>Sale Pending</button>
-    <% } else if (boat.stock > 0) { %>
+    <% } else if (boat.condition !== 'new' || boat.stock > 0) { %>
       <% if (currentUser) { %>
         <form method="post" action="/cart/add">
           <input type="hidden" name="boatId" value="<%= boat.id %>">

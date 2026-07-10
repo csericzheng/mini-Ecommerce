@@ -25,6 +25,9 @@ router.post('/add', (req, res) => {
   if (!boat) return res.status(404).render('404');
   if (boat.owner_id === req.session.userId) return res.status(403).render('403');
   if (boat.status !== 'available') return res.redirect(req.get('Referrer') || '/');
+  // Only new (dealer) boats track a quantity; a used boat is a single
+  // unique item, so "out of stock" never applies to it.
+  if (boat.condition === 'new' && boat.stock <= 0) return res.redirect(req.get('Referrer') || '/');
 
   const cart = getCart(req);
   cart[boat.id] = {

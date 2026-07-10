@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS boats (
   price_cents INTEGER NOT NULL,
   stock INTEGER NOT NULL DEFAULT 1,
   status TEXT NOT NULL DEFAULT 'available',
+  condition TEXT NOT NULL DEFAULT 'used',
   description TEXT NOT NULL,
   image_file TEXT NOT NULL,
   views INTEGER NOT NULL DEFAULT 0,

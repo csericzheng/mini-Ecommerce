@@ -34,6 +34,13 @@ if (!boatColumns.includes('engine_hours')) {
 if (!boatColumns.includes('status')) {
   db.exec("ALTER TABLE boats ADD COLUMN status TEXT NOT NULL DEFAULT 'available'");
 }
+if (!boatColumns.includes('condition')) {
+  db.exec("ALTER TABLE boats ADD COLUMN condition TEXT NOT NULL DEFAULT 'used'");
+  // Every boat that existed before this column was added is part of the
+  // original dealer/seed catalog (new-boat inventory tracked by quantity),
+  // not an individual seller's used-boat listing.
+  db.exec("UPDATE boats SET condition = 'new'");
+}
 
 const orderColumnInfo = db.prepare("PRAGMA table_info(orders)").all();
 const orderColumns = orderColumnInfo.map((c) => c.name);

@@ -80,4 +80,24 @@ async function createBoatViaSell(baseUrl, cookie, overrides = {}) {
   return boatId;
 }
 
-module.exports = { createTestApp, sessionCookieFrom, registerUser, loginUser, createBoatViaSell };
+// Creates a boat via the real /admin/new form submission (as the given
+// admin session), defaulting to dealer "new" inventory. Looks the id up by
+// name since /admin/new redirects to the boat list, not the boat itself.
+async function createBoatViaAdmin(baseUrl, adminCookie, overrides = {}) {
+  const fields = {
+    name: `Admin Boat ${crypto.randomUUID()}`, type: 'Sailboat', manufacturer: 'Beneteau', year: '2020',
+    length_ft: '30', capacity: '6', engine_hours: '50', price: '50000', stock: '1',
+    status: 'available', condition: 'new',
+    description: 'A dealer boat for testing.', image_file: 'placeholder.svg', ...overrides,
+  };
+  await fetch(`${baseUrl}/admin/new`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', Cookie: adminCookie },
+    body: new URLSearchParams(fields),
+    redirect: 'manual',
+  });
+  const db = require('../../db/database');
+  return db.prepare('SELECT id FROM boats WHERE name = ?').get(fields.name).id;
+}
+
+module.exports = { createTestApp, sessionCookieFrom, registerUser, loginUser, createBoatViaSell, createBoatViaAdmin };

@@ -55,6 +55,13 @@
         <option value="sold" <%= boat && boat.status === 'sold' ? 'selected' : '' %>>Sold</option>
       </select>
     </label>
+    <label>
+      Condition
+      <select name="condition">
+        <option value="new" <%= !boat || boat.condition === 'new' ? 'selected' : '' %>>New</option>
+        <option value="used" <%= boat && boat.condition === 'used' ? 'selected' : '' %>>Used</option>
+      </select>
+    </label>
   </div>
 
   <label>

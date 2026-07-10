@@ -26,11 +26,13 @@ router.get('/new', (req, res) => {
 
 router.post('/new', (req, res) => {
   const boat = boatFromForm(req.body);
-  const columns = [...FIELDS, 'owner_id'].join(', ');
-  const placeholders = [...FIELDS.map((f) => `@${f}`), '@owner_id'].join(', ');
+  // A private seller's own listing is always a used boat — not selectable
+  // on this form, unlike the admin's dealer-inventory form.
+  const columns = [...FIELDS, 'owner_id', 'condition'].join(', ');
+  const placeholders = [...FIELDS.map((f) => `@${f}`), '@owner_id', '@condition'].join(', ');
   const info = db
     .prepare(`INSERT INTO boats (${columns}) VALUES (${placeholders})`)
-    .run({ ...boat, owner_id: req.session.userId });
+    .run({ ...boat, owner_id: req.session.userId, condition: 'used' });
   res.redirect(`/boats/${info.lastInsertRowid}`);
 });
 
