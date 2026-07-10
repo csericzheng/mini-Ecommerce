@@ -266,6 +266,20 @@ form.stacked-form textarea { min-height: 90px; resize: vertical; }
 
 .page-heading { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; }
 
+.test-summary-cards { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.test-summary-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.5rem; text-align: center; min-width: 100px; }
+.test-summary-card .value { font-size: 1.6rem; font-weight: 700; color: var(--navy); }
+.test-summary-card .label { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.02em; }
+.test-summary-card.fail .value { color: var(--danger); }
+
+.test-status { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; color: white; text-transform: uppercase; }
+.test-status.pass { background: var(--success); }
+.test-status.fail { background: var(--danger); }
+
+.test-file-group { margin-bottom: 1.5rem; }
+.test-file-group h3 { font-size: 0.95rem; color: var(--navy); margin-bottom: 0.4rem; }
+.test-failure { color: var(--danger); font-size: 0.8rem; white-space: pre-wrap; margin: 0.3rem 0 0; }
+
 .site-footer { background: var(--navy); color: #d7e4ee; margin-top: 2rem; }
 .site-footer-inner {
   max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem;

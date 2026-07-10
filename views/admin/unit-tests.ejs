@@ -1,0 +1,66 @@
+<%- include('../partials/header') %>
+
+<div class="page-heading">
+  <h1>Admin: Unit Test Report</h1>
+  <div class="actions-row">
+    <a class="btn secondary" href="/admin">Back to boats</a>
+    <a class="btn" href="/admin/tests">Re-run tests</a>
+  </div>
+</div>
+
+<% if (runError) { %>
+  <p class="empty-state">Couldn't run the test suite: <%= runError %></p>
+<% } else {
+  const summary = report.summary;
+  const byFile = {};
+  report.tests.forEach(function(t) {
+    if (!byFile[t.file]) byFile[t.file] = [];
+    byFile[t.file].push(t);
+  });
+%>
+  <div class="test-summary-cards">
+    <div class="test-summary-card">
+      <div class="value"><%= summary.tests || 0 %></div>
+      <div class="label">Tests</div>
+    </div>
+    <div class="test-summary-card">
+      <div class="value"><%= summary.pass || 0 %></div>
+      <div class="label">Passed</div>
+    </div>
+    <div class="test-summary-card <%= (summary.fail || 0) > 0 ? 'fail' : '' %>">
+      <div class="value"><%= summary.fail || 0 %></div>
+      <div class="label">Failed</div>
+    </div>
+    <div class="test-summary-card">
+      <div class="value"><%= Math.round(summary.duration_ms || 0) %>ms</div>
+      <div class="label">Duration</div>
+    </div>
+  </div>
+
+  <% Object.keys(byFile).sort().forEach(function(file) { %>
+    <div class="test-file-group">
+      <h3><%= file %></h3>
+      <table class="admin-table">
+        <thead>
+          <tr><th>Status</th><th>Test</th><th>Time</th></tr>
+        </thead>
+        <tbody>
+          <% byFile[file].forEach(function(t) { %>
+            <tr>
+              <td><span class="test-status <%= t.passed ? 'pass' : 'fail' %>"><%= t.passed ? 'Pass' : 'Fail' %></span></td>
+              <td>
+                <%= t.name %>
+                <% if (!t.passed && t.failureMessage) { %>
+                  <div class="test-failure"><%= t.failureMessage %></div>
+                <% } %>
+              </td>
+              <td><%= t.time_ms %>ms</td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% }); %>
+<% } %>
+
+<%- include('../partials/footer') %>

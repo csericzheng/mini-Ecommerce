@@ -1,7 +1,13 @@
 const express = require('express');
+const path = require('path');
+// Kept as a module reference (not destructured) so tests can mock
+// childProcess.execFile in place without needing this route's own binding
+// to be re-required.
+const childProcess = require('child_process');
 const db = require('../db/database');
 const { requireAdmin } = require('../lib/middleware');
 const { FIELDS, boatFromForm } = require('../lib/boat-form');
+const { parseJUnitReport } = require('../lib/junit-report');
 
 const router = express.Router();
 
@@ -70,6 +76,25 @@ router.get('/orders', (req, res) => {
   const ordersWithItems = orders.map((order) => ({ ...order, items: itemsForOrder.all(order.id) }));
 
   res.render('admin/orders', { orders: ordersWithItems });
+});
+
+router.get('/tests', (req, res) => {
+  childProcess.execFile(
+    process.execPath,
+    ['--test', '--test-reporter=junit', '--test-reporter-destination=stdout'],
+    { cwd: path.join(__dirname, '..'), timeout: 60000, maxBuffer: 10 * 1024 * 1024 },
+    (error, stdout) => {
+      // node --test exits non-zero when any test fails; that's not a run
+      // failure, so only treat it as one if we got no output to parse at all.
+      if (!stdout) {
+        return res.status(500).render('admin/unit-tests', {
+          report: null,
+          runError: (error && error.message) || 'Test run produced no output.',
+        });
+      }
+      res.render('admin/unit-tests', { report: parseJUnitReport(stdout), runError: null });
+    }
+  );
 });
 
 router.get('/users', (req, res) => {

@@ -49,6 +49,10 @@ app.use((req, res) => {
   res.status(404).render('404');
 });
 
-app.listen(PORT, () => {
-  console.log(`Mini e-commerce boats app running at http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Mini e-commerce boats app running at http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
