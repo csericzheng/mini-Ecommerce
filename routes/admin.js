@@ -7,6 +7,12 @@ const router = express.Router();
 
 router.use(requireAdmin);
 
+const VALID_STATUSES = ['available', 'pending', 'sold'];
+
+function statusFromForm(body) {
+  return VALID_STATUSES.includes(body.status) ? body.status : 'available';
+}
+
 router.get('/', (req, res) => {
   const boats = db.prepare(`
     SELECT boats.*, users.first_name AS owner_first_name, users.last_name AS owner_last_name
@@ -27,9 +33,9 @@ router.get('/new', (req, res) => {
 });
 
 router.post('/new', (req, res) => {
-  const boat = boatFromForm(req.body);
-  const columns = FIELDS.join(', ');
-  const placeholders = FIELDS.map((f) => `@${f}`).join(', ');
+  const boat = { ...boatFromForm(req.body), status: statusFromForm(req.body) };
+  const columns = [...FIELDS, 'status'].join(', ');
+  const placeholders = [...FIELDS.map((f) => `@${f}`), '@status'].join(', ');
   db.prepare(`INSERT INTO boats (${columns}) VALUES (${placeholders})`).run(boat);
   res.redirect('/admin');
 });
@@ -41,8 +47,8 @@ router.get('/:id/edit', (req, res) => {
 });
 
 router.post('/:id/edit', (req, res) => {
-  const boat = boatFromForm(req.body);
-  const setClause = FIELDS.map((f) => `${f} = @${f}`).join(', ');
+  const boat = { ...boatFromForm(req.body), status: statusFromForm(req.body) };
+  const setClause = [...FIELDS, 'status'].map((f) => `${f} = @${f}`).join(', ');
   db.prepare(`UPDATE boats SET ${setClause} WHERE id = @id`).run({ ...boat, id: req.params.id });
   res.redirect('/admin');
 });

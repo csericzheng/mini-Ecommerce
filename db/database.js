@@ -31,6 +31,9 @@ if (!boatColumns.includes('engine_hours')) {
   // year of age) rather than leaving them all at 0.
   db.exec(`UPDATE boats SET engine_hours = 40 * MAX(0, CAST(strftime('%Y', 'now') AS INTEGER) - year)`);
 }
+if (!boatColumns.includes('status')) {
+  db.exec("ALTER TABLE boats ADD COLUMN status TEXT NOT NULL DEFAULT 'available'");
+}
 
 const orderColumnInfo = db.prepare("PRAGMA table_info(orders)").all();
 const orderColumns = orderColumnInfo.map((c) => c.name);

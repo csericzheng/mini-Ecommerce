@@ -185,6 +185,7 @@ main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
 }
 .badge-new { background: var(--success); }
 .badge-sold { background: var(--danger); }
+.badge-pending { background: var(--accent-dark); }
 
 .btn {
   display: inline-block;

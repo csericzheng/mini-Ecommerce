@@ -2,7 +2,12 @@
 
 <div class="confirmation-box">
   <h1>Thank you, <%= customerName %>!</h1>
-  <p>Your request <strong>#<%= orderId %></strong> is now visible to our team for processing. They'll reach out to your phone number to complete the sale.</p>
+  <p>Your request for the following boat<%= items.length > 1 ? 's' : '' %> is now visible to our team for processing. They'll reach out to your phone number to complete the sale.</p>
+  <ul class="spec-list">
+    <% items.forEach(function(item) { %>
+      <li><a href="/boats/<%= item.boatId %>">#<%= item.boatId %> — <%= item.name %></a></li>
+    <% }); %>
+  </ul>
   <p>Total: <strong><%= formatPrice(total_cents) %></strong></p>
   <p><a class="btn" href="/">Continue shopping</a></p>
 </div>

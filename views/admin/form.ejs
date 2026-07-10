@@ -47,6 +47,14 @@
       Stock
       <input type="number" name="stock" value="<%= boat ? boat.stock : 0 %>" required>
     </label>
+    <label>
+      Status
+      <select name="status">
+        <option value="available" <%= !boat || boat.status === 'available' ? 'selected' : '' %>>Available</option>
+        <option value="pending" <%= boat && boat.status === 'pending' ? 'selected' : '' %>>Sale Pending</option>
+        <option value="sold" <%= boat && boat.status === 'sold' ? 'selected' : '' %>>Sold</option>
+      </select>
+    </label>
   </div>
 
   <label>

@@ -24,6 +24,7 @@ router.post('/add', (req, res) => {
   `).get(req.body.boatId);
   if (!boat) return res.status(404).render('404');
   if (boat.owner_id === req.session.userId) return res.status(403).render('403');
+  if (boat.status !== 'available') return res.redirect(req.get('Referrer') || '/');
 
   const cart = getCart(req);
   cart[boat.id] = {
@@ -76,17 +77,19 @@ router.post('/checkout', requireAuth, (req, res) => {
       'INSERT INTO order_items (order_id, boat_id, boat_name, unit_price_cents, quantity) VALUES (?, ?, ?, ?, 1)'
     );
     const decrementStock = db.prepare('UPDATE boats SET stock = MAX(0, stock - 1) WHERE id = ?');
+    const markPending = db.prepare("UPDATE boats SET status = 'pending' WHERE id = ?");
 
     for (const item of items) {
       insertItem.run(orderId, item.boatId, item.name, item.price_cents);
       decrementStock.run(item.boatId);
+      markPending.run(item.boatId);
     }
     return orderId;
   });
 
   const orderId = placeOrder();
   req.session.cart = {};
-  res.render('order-confirmation', { orderId, total_cents, customerName });
+  res.render('order-confirmation', { orderId, items, total_cents, customerName });
 });
 
 module.exports = router;

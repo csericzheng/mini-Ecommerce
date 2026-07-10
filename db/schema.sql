@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS boats (
   engine_hours INTEGER NOT NULL DEFAULT 0,
   price_cents INTEGER NOT NULL,
   stock INTEGER NOT NULL DEFAULT 1,
+  status TEXT NOT NULL DEFAULT 'available',
   description TEXT NOT NULL,
   image_file TEXT NOT NULL,
   views INTEGER NOT NULL DEFAULT 0,
