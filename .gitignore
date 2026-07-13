@@ -5,6 +5,9 @@ db/*.db-wal
 public/images/boats/boat-*.svg
 .env
 npm-debug.log*
+~$*.pptx
+~$*.docx
+~$*.xlsx
 
 # db/miniecommerce.db and public/images/boats/real/ ARE committed on purpose:
 # they ship the site pre-seeded with real photos so it runs on a fresh
