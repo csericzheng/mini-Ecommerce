@@ -87,6 +87,9 @@
 
 <div class="results-heading">
   <h2><%= boats.length %> Boat<%= boats.length === 1 ? '' : 's' %> For Sale</h2>
+  <% if (!hasUserLocation) { %>
+    <button type="button" id="useMyLocationBtn" class="btn small secondary">📍 Show distance to me</button>
+  <% } %>
 </div>
 
 <% if (boats.length === 0) { %>
@@ -114,6 +117,12 @@
           <h3><a href="/boats/<%= boat.id %>"><%= boat.name %></a></h3>
           <div class="spec-line">ID #<%= boat.id %> · <%= boat.type %> · <%= boat.length_ft %> ft · <%= boat.year %></div>
           <div class="meta-line">Listed <%= daysListed === 0 ? 'today' : daysListed + 'd ago' %> · <%= boat.views %> views</div>
+          <% if (boat.city || boat.province) { %>
+            <div class="meta-line">
+              📍 <%= [boat.city, boat.province].filter(Boolean).join(', ') %>
+              <% if (boat.distanceKm != null) { %> · <%= boat.distanceKm %> km away<% } %>
+            </div>
+          <% } %>
           <% if (boat.status === 'available' && (boat.condition !== 'new' || boat.stock > 0) && !(currentUser && currentUser.id === boat.owner_id)) { %>
             <% if (currentUser) { %>
               <form method="post" action="/cart/add">
@@ -158,5 +167,40 @@
     <a href="/?condition=used">Used Boats</a>
   </div>
 </section>
+
+<% if (!hasUserLocation) { %>
+<script>
+  var useMyLocationBtn = document.getElementById('useMyLocationBtn');
+  if (useMyLocationBtn && navigator.geolocation) {
+    useMyLocationBtn.addEventListener('click', function () {
+      useMyLocationBtn.disabled = true;
+      useMyLocationBtn.textContent = 'Locating…';
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          var form = document.createElement('form');
+          form.method = 'post';
+          form.action = '/location';
+          ['lat', 'lng'].forEach(function (key) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = key === 'lat' ? position.coords.latitude : position.coords.longitude;
+            form.appendChild(input);
+          });
+          document.body.appendChild(form);
+          form.submit();
+        },
+        function () {
+          useMyLocationBtn.disabled = false;
+          useMyLocationBtn.textContent = "📍 Couldn't get your location — try again";
+        }
+      );
+    });
+  } else if (useMyLocationBtn) {
+    useMyLocationBtn.disabled = true;
+    useMyLocationBtn.textContent = 'Location not supported by this browser';
+  }
+</script>
+<% } %>
 
 <%- include('partials/footer') %>

@@ -1,6 +1,8 @@
 const express = require('express');
 const db = require('../db/database');
 const { CANADA_PROVINCES } = require('../lib/canada-provinces');
+const { CITY_COORDINATES } = require('../lib/city-coordinates');
+const { distanceKm } = require('../lib/geo');
 
 const router = express.Router();
 
@@ -8,6 +10,18 @@ const COVER_IMAGE_SQL = `COALESCE(
   (SELECT filename FROM boat_images WHERE boat_id = boats.id ORDER BY position LIMIT 1),
   boats.image_file
 ) AS cover_image`;
+
+// Saves the browser-reported coordinates in the session so every page load
+// (not just this one) can show a distance to each boat, without asking for
+// location again.
+router.post('/location', (req, res) => {
+  const lat = parseFloat(req.body.lat);
+  const lng = parseFloat(req.body.lng);
+  if (Number.isFinite(lat) && Number.isFinite(lng)) {
+    req.session.userLocation = { lat, lng };
+  }
+  res.redirect(req.get('Referrer') || '/');
+});
 
 router.get('/', (req, res) => {
   const { type, make, condition, q, yearMin, yearMax, priceMin, priceMax, lengthMin, lengthMax, engineHoursMin, engineHoursMax, city, province } = req.query;
@@ -72,14 +86,22 @@ router.get('/', (req, res) => {
   }
   query += ' ORDER BY boats.id';
 
-  const boats = db.prepare(query).all(...params);
+  const userLocation = req.session.userLocation;
+  const boatsWithDistance = db.prepare(query).all(...params).map((boat) => {
+    const cityCoords = CITY_COORDINATES[boat.city];
+    const distance = userLocation && cityCoords
+      ? Math.round(distanceKm(userLocation.lat, userLocation.lng, cityCoords.lat, cityCoords.lng))
+      : null;
+    return { ...boat, distanceKm: distance };
+  });
   const types = db.prepare('SELECT DISTINCT type FROM boats ORDER BY type').all().map((r) => r.type);
   const makes = db.prepare('SELECT DISTINCT manufacturer FROM boats ORDER BY manufacturer').all().map((r) => r.manufacturer);
   const bounds = db.prepare('SELECT MIN(year) AS minYear, MAX(year) AS maxYear, MIN(price_cents) AS minPrice, MAX(price_cents) AS maxPrice, MIN(length_ft) AS minLength, MAX(length_ft) AS maxLength, MIN(engine_hours) AS minEngineHours, MAX(engine_hours) AS maxEngineHours FROM boats').get();
   const featuredBoat = db.prepare(`SELECT boats.*, ${COVER_IMAGE_SQL} FROM boats ORDER BY views DESC, boats.id LIMIT 1`).get();
 
   res.render('index', {
-    boats,
+    boats: boatsWithDistance,
+    hasUserLocation: !!userLocation,
     types,
     makes,
     bounds,
