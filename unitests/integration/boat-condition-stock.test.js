@@ -13,16 +13,16 @@ test.before(async () => {
 });
 test.after(() => app.close());
 
-test('a new (dealer) boat with zero stock shows "Out of Stock" and cannot be added to cart', async () => {
+test('a new (dealer) boat with zero stock shows "Pending Sale" and cannot be added to cart', async () => {
   const boatId = await createBoatViaAdmin(app.baseUrl, adminCookie, { name: 'New Boat Zero Stock', stock: '0' });
 
   const detailRes = await fetch(`${app.baseUrl}/boats/${boatId}`);
   const detailBody = await detailRes.text();
-  assert.ok(detailBody.includes('Out of stock'));
+  assert.ok(detailBody.includes('Pending Sale'));
   assert.ok(detailBody.includes('<strong>Condition:</strong> New'));
 
   const homeBody = await (await fetch(`${app.baseUrl}/`)).text();
-  assert.ok(homeBody.includes('Out of Stock'));
+  assert.ok(homeBody.includes('Pending Sale'));
 
   await fetch(`${app.baseUrl}/cart/add`, {
     method: 'POST',
@@ -34,7 +34,7 @@ test('a new (dealer) boat with zero stock shows "Out of Stock" and cannot be add
   assert.ok(!cartBody.includes('New Boat Zero Stock'));
 });
 
-test('a used boat with zero stock is still shown as available (no "Out of Stock")', async () => {
+test('a used boat with zero stock is still shown as available (no "Pending Sale")', async () => {
   const boatId = await createBoatViaSell(app.baseUrl, adminCookie, { name: 'Used Boat Zero Stock', stock: '1' });
 
   // Simulate a boat whose stock was already exhausted (e.g. an admin edit)
@@ -44,14 +44,14 @@ test('a used boat with zero stock is still shown as available (no "Out of Stock"
 
   const detailRes = await fetch(`${app.baseUrl}/boats/${boatId}`);
   const detailBody = await detailRes.text();
-  assert.ok(!detailBody.includes('Out of stock'));
+  assert.ok(!detailBody.includes('Pending Sale'));
   assert.ok(detailBody.includes('<strong>Condition:</strong> Used'));
   assert.ok(!detailBody.includes('<strong>Stock:</strong>'));
 
   const homeBody = await (await fetch(`${app.baseUrl}/`)).text();
   const cardIndex = homeBody.indexOf('Used Boat Zero Stock');
   const cardSnippet = homeBody.slice(cardIndex - 500, cardIndex);
-  assert.ok(!cardSnippet.includes('Out of Stock'));
+  assert.ok(!cardSnippet.includes('Pending Sale'));
 
   const addRes = await fetch(`${app.baseUrl}/cart/add`, {
     method: 'POST',

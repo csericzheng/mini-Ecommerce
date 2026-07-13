@@ -24,6 +24,11 @@
 
 <form method="post" action="/cart/checkout">
   <p style="color: var(--muted); font-size: 0.85rem;">Your name, phone number, and the boat(s) above will be visible to our team to complete the sale. This is a demo — no real payment is processed.</p>
+  <fieldset class="financing-question">
+    <legend>Financing needed?</legend>
+    <label class="radio-inline"><input type="radio" name="financingNeeded" value="yes"> Yes</label>
+    <label class="radio-inline"><input type="radio" name="financingNeeded" value="no" checked> No</label>
+  </fieldset>
   <button class="btn" type="submit">Process</button>
 </form>
 

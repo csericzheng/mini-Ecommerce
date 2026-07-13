@@ -69,11 +69,12 @@ router.post('/checkout', requireAuth, (req, res) => {
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.session.userId);
   const customerName = `${user.first_name} ${user.last_name}`;
   const total_cents = items.reduce((sum, item) => sum + item.price_cents, 0);
+  const financingNeeded = req.body.financingNeeded === 'yes' ? 1 : 0;
 
   const placeOrder = db.transaction(() => {
     const orderInfo = db
-      .prepare('INSERT INTO orders (user_id, customer_name, customer_email, total_cents) VALUES (?, ?, ?, ?)')
-      .run(user.id, customerName, user.email, total_cents);
+      .prepare('INSERT INTO orders (user_id, customer_name, customer_email, total_cents, financing_needed) VALUES (?, ?, ?, ?, ?)')
+      .run(user.id, customerName, user.email, total_cents, financingNeeded);
     const orderId = orderInfo.lastInsertRowid;
 
     const insertItem = db.prepare(

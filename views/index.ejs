@@ -73,7 +73,7 @@
           <% } else if (boat.status === 'pending') { %>
             <span class="badge badge-pending">Sale Pending</span>
           <% } else if (boat.condition === 'new' && boat.stock <= 0) { %>
-            <span class="badge badge-sold">Out of Stock</span>
+            <span class="badge badge-pending">Pending Sale</span>
           <% } else if (daysListed <= 3) { %>
             <span class="badge badge-new">New Listing</span>
           <% } %>

@@ -40,7 +40,7 @@
       <li><strong>Condition:</strong> <%= boat.condition === 'new' ? 'New' : 'Used' %></li>
       <li><strong>Status:</strong> <%= boat.status === 'sold' ? 'Sold' : boat.status === 'pending' ? 'Sale Pending' : 'Available' %></li>
       <% if (boat.condition === 'new') { %>
-        <li><strong>Stock:</strong> <%= boat.stock > 0 ? boat.stock + ' available' : 'Out of stock' %></li>
+        <li><strong>Stock:</strong> <%= boat.stock > 0 ? boat.stock + ' available' : 'Pending Sale' %></li>
       <% } %>
       <li><strong>Listed:</strong> <%= daysListed === 0 ? 'today' : daysListed + ' day' + (daysListed === 1 ? '' : 's') + ' ago' %></li>
       <li><strong>Views:</strong> <%= boat.views %></li>
@@ -69,7 +69,7 @@
         <a class="btn" href="/login?next=<%= encodeURIComponent('/boats/' + boat.id) %>">Log in to add to cart</a>
       <% } %>
     <% } else { %>
-      <button class="btn" disabled>Out of stock</button>
+      <button class="btn" disabled>Pending Sale</button>
     <% } %>
   </div>
 </div>

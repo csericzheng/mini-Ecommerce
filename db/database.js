@@ -72,6 +72,14 @@ if (customerEmailCol && customerEmailCol.notnull) {
   db.exec('PRAGMA foreign_keys = ON');
 }
 
+// Checked after the possible rebuild above (rather than against the earlier
+// orderColumnInfo snapshot) so this doesn't get silently dropped by that
+// rebuild's hardcoded column list if both migrations were ever needed at once.
+const orderColumnsNow = db.prepare("PRAGMA table_info(orders)").all().map((c) => c.name);
+if (!orderColumnsNow.includes('financing_needed')) {
+  db.exec('ALTER TABLE orders ADD COLUMN financing_needed INTEGER NOT NULL DEFAULT 0');
+}
+
 const userColumns = db.prepare("PRAGMA table_info(users)").all().map((c) => c.name);
 if (!userColumns.includes('role')) {
   db.exec("ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'user'");

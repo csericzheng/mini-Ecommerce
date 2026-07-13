@@ -10,7 +10,7 @@
 <% } else { %>
   <table class="admin-table">
     <thead>
-      <tr><th>Request</th><th>Buyer</th><th>Phone</th><th>Boats</th><th>Total</th><th>Date</th></tr>
+      <tr><th>Request</th><th>Buyer</th><th>Phone</th><th>Boats</th><th>Financing?</th><th>Total</th><th>Date</th></tr>
     </thead>
     <tbody>
       <% orders.forEach(function(order) { %>
@@ -23,6 +23,7 @@
               <div><a href="/boats/<%= item.boat_id %>">#<%= item.boat_id %> — <%= item.boat_name %></a></div>
             <% }); %>
           </td>
+          <td><%= order.financing_needed ? 'Yes' : 'No' %></td>
           <td><%= formatPrice(order.total_cents) %></td>
           <td><%= order.created_at %></td>
         </tr>
