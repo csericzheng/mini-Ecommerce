@@ -94,6 +94,15 @@ router.get('/', (req, res) => {
       : null;
     return { ...boat, distanceKm: distance };
   });
+  // Once the viewer's location is known, show the nearest boats first;
+  // boats with an unknown distance (city not in the lookup table) sort last.
+  if (userLocation) {
+    boatsWithDistance.sort((a, b) => {
+      if (a.distanceKm == null) return 1;
+      if (b.distanceKm == null) return -1;
+      return a.distanceKm - b.distanceKm;
+    });
+  }
   const types = db.prepare('SELECT DISTINCT type FROM boats ORDER BY type').all().map((r) => r.type);
   const makes = db.prepare('SELECT DISTINCT manufacturer FROM boats ORDER BY manufacturer').all().map((r) => r.manufacturer);
   const bounds = db.prepare('SELECT MIN(year) AS minYear, MAX(year) AS maxYear, MIN(price_cents) AS minPrice, MAX(price_cents) AS maxPrice, MIN(length_ft) AS minLength, MAX(length_ft) AS maxLength, MIN(engine_hours) AS minEngineHours, MAX(engine_hours) AS maxEngineHours FROM boats').get();

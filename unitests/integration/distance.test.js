@@ -55,3 +55,21 @@ test('a boat in a different city shows a non-zero distance', async () => {
   assert.ok(match, 'expected a "N km away" distance');
   assert.ok(Number(match[1]) > 3000, `expected Toronto-Vancouver to be a few thousand km, got ${match[1]}`);
 });
+
+test('once a location is set, results sort nearest-first', async () => {
+  // Viewer is at Toronto. Ottawa (~350km) should come before Vancouver
+  // (~3300km) even though "Ottawa Test Boat" is created after it.
+  await createBoatViaAdmin(app.baseUrl, adminCookie, { name: 'Ottawa Test Boat', city: 'Ottawa', province: 'Ontario' });
+
+  const res = await fetch(`${app.baseUrl}/`, { headers: { Cookie: adminCookie } });
+  const body = await res.text();
+  const gridStart = body.indexOf('boat-grid');
+  const gridBody = body.slice(gridStart);
+
+  const torontoIdx = gridBody.indexOf('Toronto Test Boat');
+  const ottawaIdx = gridBody.indexOf('Ottawa Test Boat');
+  const vancouverIdx = gridBody.indexOf('Vancouver Test Boat');
+
+  assert.ok(torontoIdx < ottawaIdx, 'Toronto (0km) should appear before Ottawa (~350km)');
+  assert.ok(ottawaIdx < vancouverIdx, 'Ottawa (~350km) should appear before Vancouver (~3300km)');
+});
