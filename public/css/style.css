@@ -100,7 +100,6 @@ main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
   margin: -1.5rem -1.5rem 0;
   min-height: 440px;
   background: var(--navy);
-  overflow: hidden;
 }
 .hero-banner-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.85; }
 .hero-banner-caption {
@@ -115,9 +114,9 @@ main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
 .hero-banner-caption h1 { margin: 0; font-size: 1.9rem; }
 
 .hero-filter-card {
-  position: absolute; z-index: 2; top: 1.75rem; left: 1.75rem; background: var(--card-bg);
+  position: absolute; z-index: 2; top: 1.75rem; left: 1.75rem; bottom: 1.75rem; background: var(--card-bg);
   border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-  padding: 1.25rem; width: 280px;
+  padding: 1.25rem; width: 280px; overflow-y: auto;
 }
 .hero-filter-card h2 { margin: 0 0 0.9rem; font-size: 1.05rem; color: var(--navy); }
 .hero-filter-card form { display: flex; flex-direction: column; gap: 0.8rem; }
