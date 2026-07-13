@@ -51,6 +51,11 @@
   </div>
 
   <label>
+    Location
+    <input type="text" name="location" placeholder="City, State" value="<%= boat ? boat.location : '' %>">
+  </label>
+
+  <label>
     Image filename (in /public/images/boats/)
     <input type="text" name="image_file" value="<%= boat ? boat.image_file : 'placeholder.svg' %>">
   </label>

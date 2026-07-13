@@ -54,10 +54,15 @@
           <label>Year From <input type="number" name="yearMin" placeholder="<%= bounds.minYear %>" min="<%= bounds.minYear %>" max="<%= bounds.maxYear %>" value="<%= yearMin %>"></label>
           <label>Year To <input type="number" name="yearMax" placeholder="<%= bounds.maxYear %>" min="<%= bounds.minYear %>" max="<%= bounds.maxYear %>" value="<%= yearMax %>"></label>
         </div>
+        <div class="hero-filter-row">
+          <label>Engine Hrs From <input type="number" name="engineHoursMin" placeholder="<%= bounds.minEngineHours %>" min="0" value="<%= engineHoursMin %>"></label>
+          <label>Engine Hrs To <input type="number" name="engineHoursMax" placeholder="<%= bounds.maxEngineHours %>" min="0" value="<%= engineHoursMax %>"></label>
+        </div>
+        <label>Location <input type="text" name="location" placeholder="City or State" value="<%= location %>"></label>
         <label>Keyword <input type="text" name="q" placeholder="Name or manufacturer" value="<%= q %>"></label>
       </details>
 
-      <% if (selectedType || selectedMake || selectedCondition || q || yearMin || yearMax || priceMin || priceMax || lengthMin || lengthMax) { %>
+      <% if (selectedType || selectedMake || selectedCondition || q || yearMin || yearMax || priceMin || priceMax || lengthMin || lengthMax || engineHoursMin || engineHoursMax || location) { %>
         <a class="clear-filters" href="/">Clear filters</a>
       <% } %>
     </form>

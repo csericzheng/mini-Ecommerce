@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS boats (
   stock INTEGER NOT NULL DEFAULT 1,
   status TEXT NOT NULL DEFAULT 'available',
   condition TEXT NOT NULL DEFAULT 'used',
+  location TEXT NOT NULL DEFAULT '',
   description TEXT NOT NULL,
   image_file TEXT NOT NULL,
   views INTEGER NOT NULL DEFAULT 0,

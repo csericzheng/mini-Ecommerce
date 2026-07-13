@@ -31,6 +31,9 @@
     <div class="price"><%= formatPrice(boat.price_cents) %></div>
     <ul class="spec-list">
       <li><strong>Boat ID:</strong> #<%= boat.id %></li>
+      <% if (boat.location) { %>
+        <li><strong>Location:</strong> <%= boat.location %></li>
+      <% } %>
       <li><strong>Type:</strong> <%= boat.type %></li>
       <li><strong>Manufacturer:</strong> <%= boat.manufacturer %></li>
       <li><strong>Year:</strong> <%= boat.year %></li>

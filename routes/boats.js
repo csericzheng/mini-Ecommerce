@@ -9,7 +9,7 @@ const COVER_IMAGE_SQL = `COALESCE(
 ) AS cover_image`;
 
 router.get('/', (req, res) => {
-  const { type, make, condition, q, yearMin, yearMax, priceMin, priceMax, lengthMin, lengthMax } = req.query;
+  const { type, make, condition, q, yearMin, yearMax, priceMin, priceMax, lengthMin, lengthMax, engineHoursMin, engineHoursMax, location } = req.query;
   let query = `SELECT boats.*, ${COVER_IMAGE_SQL} FROM boats WHERE 1=1`;
   const params = [];
 
@@ -53,12 +53,24 @@ router.get('/', (req, res) => {
     query += ' AND length_ft <= ?';
     params.push(parseInt(lengthMax, 10));
   }
+  if (engineHoursMin) {
+    query += ' AND engine_hours >= ?';
+    params.push(parseInt(engineHoursMin, 10));
+  }
+  if (engineHoursMax) {
+    query += ' AND engine_hours <= ?';
+    params.push(parseInt(engineHoursMax, 10));
+  }
+  if (location) {
+    query += ' AND location LIKE ?';
+    params.push(`%${location}%`);
+  }
   query += ' ORDER BY boats.id';
 
   const boats = db.prepare(query).all(...params);
   const types = db.prepare('SELECT DISTINCT type FROM boats ORDER BY type').all().map((r) => r.type);
   const makes = db.prepare('SELECT DISTINCT manufacturer FROM boats ORDER BY manufacturer').all().map((r) => r.manufacturer);
-  const bounds = db.prepare('SELECT MIN(year) AS minYear, MAX(year) AS maxYear, MIN(price_cents) AS minPrice, MAX(price_cents) AS maxPrice, MIN(length_ft) AS minLength, MAX(length_ft) AS maxLength FROM boats').get();
+  const bounds = db.prepare('SELECT MIN(year) AS minYear, MAX(year) AS maxYear, MIN(price_cents) AS minPrice, MAX(price_cents) AS maxPrice, MIN(length_ft) AS minLength, MAX(length_ft) AS maxLength, MIN(engine_hours) AS minEngineHours, MAX(engine_hours) AS maxEngineHours FROM boats').get();
   const featuredBoat = db.prepare(`SELECT boats.*, ${COVER_IMAGE_SQL} FROM boats ORDER BY views DESC, boats.id LIMIT 1`).get();
 
   res.render('index', {
@@ -77,6 +89,9 @@ router.get('/', (req, res) => {
     priceMax: priceMax || '',
     lengthMin: lengthMin || '',
     lengthMax: lengthMax || '',
+    engineHoursMin: engineHoursMin || '',
+    engineHoursMax: engineHoursMax || '',
+    location: location || '',
   });
 });
 

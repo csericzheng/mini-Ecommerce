@@ -41,6 +41,9 @@ if (!boatColumns.includes('condition')) {
   // not an individual seller's used-boat listing.
   db.exec("UPDATE boats SET condition = 'new'");
 }
+if (!boatColumns.includes('location')) {
+  db.exec("ALTER TABLE boats ADD COLUMN location TEXT NOT NULL DEFAULT ''");
+}
 
 const orderColumnInfo = db.prepare("PRAGMA table_info(orders)").all();
 const orderColumns = orderColumnInfo.map((c) => c.name);
