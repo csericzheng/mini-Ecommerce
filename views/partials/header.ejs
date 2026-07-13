@@ -9,6 +9,26 @@
 <body>
   <div class="utility-bar">
     <a class="brand" href="/">⚓ Mini Boat Shop</a>
+    <nav class="main-nav">
+      <div class="nav-dropdown">
+        <span class="nav-dropdown-toggle">Search ▾</span>
+        <div class="nav-dropdown-menu">
+          <a href="/">All Boats For Sale</a>
+          <a href="/?sort=featured">Featured Listings</a>
+          <a href="/?sort=new">Newly Listed Boats</a>
+          <div class="nav-dropdown-divider"></div>
+          <% navTypes.forEach(function(t) { %>
+            <a href="/?type=<%= encodeURIComponent(t) %>"><%= t %>s</a>
+          <% }); %>
+        </div>
+      </div>
+      <a href="/?sort=featured">Featured Boats</a>
+      <a href="/sell/new">Sell a Boat</a>
+    </nav>
+    <form class="nav-search" method="get" action="/">
+      <input type="text" name="q" placeholder="Search Mini Boat Shop" value="<%= typeof q !== 'undefined' ? q : '' %>">
+      <button type="submit" aria-label="Search"><span class="icon-search" aria-hidden="true"></span></button>
+    </form>
     <nav class="utility-nav">
       <% if (currentUser && currentUser.role === 'admin') { %>
         <a href="/admin">Admin</a>
@@ -17,11 +37,15 @@
         <a href="/admin/tests">Tests</a>
       <% } %>
       <% if (currentUser) { %>
-        <a href="/sell">My Listings</a>
-        <span class="utility-user">Hi, <%= currentUser.first_name %></span>
-        <form method="post" action="/logout" class="inline-form">
-          <button class="link-btn" type="submit">Log Out</button>
-        </form>
+        <div class="nav-dropdown">
+          <span class="nav-dropdown-toggle utility-user">👤 <%= currentUser.first_name %> ▾</span>
+          <div class="nav-dropdown-menu nav-dropdown-menu-right">
+            <a href="/sell">My Listings</a>
+            <form method="post" action="/logout" class="nav-dropdown-form">
+              <button class="link-btn" type="submit">Log Out</button>
+            </form>
+          </div>
+        </div>
       <% } else { %>
         <a href="/login">Log In</a>
         <a href="/register">Register</a>
@@ -29,10 +53,4 @@
       <a href="/cart">Cart<% if (cartCount > 0) { %><span class="cart-badge"><%= cartCount %></span><% } %></a>
     </nav>
   </div>
-  <nav class="type-nav">
-    <a href="/">All Boats</a>
-    <% navTypes.forEach(function(t) { %>
-      <a href="/?type=<%= encodeURIComponent(t) %>"><%= t %>s</a>
-    <% }); %>
-  </nav>
   <main>

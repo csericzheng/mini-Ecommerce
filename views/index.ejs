@@ -1,58 +1,73 @@
 <%- include('partials/header') %>
 
-<section class="hero-search">
-  <div class="hero-search-heading">
-    <h1>Search Boats For Sale</h1>
-    <a class="btn" href="/sell/new">Sell your boat</a>
+<section class="hero-banner">
+  <% if (featuredBoat) { %>
+    <img class="hero-banner-image" src="/images/boats/<%= featuredBoat.cover_image %>" alt="<%= featuredBoat.name %>">
+    <div class="hero-banner-caption">
+      <span class="hero-banner-kicker">Featured Listing</span>
+      <h1><%= featuredBoat.year %> <%= featuredBoat.name %></h1>
+    </div>
+  <% } %>
+
+  <div class="hero-filter-card">
+    <h2>Find Your Boat</h2>
+    <form method="get" action="/">
+      <label>
+        Condition
+        <select name="condition">
+          <option value="">All</option>
+          <option value="new" <%= selectedCondition === 'new' ? 'selected' : '' %>>New</option>
+          <option value="used" <%= selectedCondition === 'used' ? 'selected' : '' %>>Used</option>
+        </select>
+      </label>
+      <label>
+        Make
+        <select name="make">
+          <option value="">All Makes</option>
+          <% makes.forEach(function(m) { %>
+            <option value="<%= m %>" <%= m === selectedMake ? 'selected' : '' %>><%= m %></option>
+          <% }); %>
+        </select>
+      </label>
+      <div class="hero-filter-row">
+        <label>Price From <input type="number" name="priceMin" placeholder="<%= Math.floor(bounds.minPrice / 100) %>" min="0" step="1000" value="<%= priceMin %>"></label>
+        <label>Price To <input type="number" name="priceMax" placeholder="<%= Math.ceil(bounds.maxPrice / 100) %>" min="0" step="1000" value="<%= priceMax %>"></label>
+      </div>
+      <div class="hero-filter-row">
+        <label>Length From (ft) <input type="number" name="lengthMin" placeholder="<%= bounds.minLength %>" min="0" value="<%= lengthMin %>"></label>
+        <label>Length To (ft) <input type="number" name="lengthMax" placeholder="<%= bounds.maxLength %>" min="0" value="<%= lengthMax %>"></label>
+      </div>
+      <button class="btn hero-filter-submit" type="submit">Search</button>
+
+      <details class="advanced-search">
+        <summary>Advanced Search</summary>
+        <label>
+          Type
+          <select name="type">
+            <option value="">All Types</option>
+            <% types.forEach(function(t) { %>
+              <option value="<%= t %>" <%= t === selectedType ? 'selected' : '' %>><%= t %></option>
+            <% }); %>
+          </select>
+        </label>
+        <div class="hero-filter-row">
+          <label>Year From <input type="number" name="yearMin" placeholder="<%= bounds.minYear %>" min="<%= bounds.minYear %>" max="<%= bounds.maxYear %>" value="<%= yearMin %>"></label>
+          <label>Year To <input type="number" name="yearMax" placeholder="<%= bounds.maxYear %>" min="<%= bounds.minYear %>" max="<%= bounds.maxYear %>" value="<%= yearMax %>"></label>
+        </div>
+        <label>Keyword <input type="text" name="q" placeholder="Name or manufacturer" value="<%= q %>"></label>
+      </details>
+
+      <% if (selectedType || selectedMake || selectedCondition || q || yearMin || yearMax || priceMin || priceMax || lengthMin || lengthMax) { %>
+        <a class="clear-filters" href="/">Clear filters</a>
+      <% } %>
+    </form>
   </div>
-  <form class="filters" method="get" action="/">
-    <label>
-      Type
-      <select name="type">
-        <option value="">All types</option>
-        <% types.forEach(function(t) { %>
-          <option value="<%= t %>" <%= t === selectedType ? 'selected' : '' %>><%= t %></option>
-        <% }); %>
-      </select>
-    </label>
-
-    <label>
-      Make
-      <select name="make">
-        <option value="">All makes</option>
-        <% makes.forEach(function(m) { %>
-          <option value="<%= m %>" <%= m === selectedMake ? 'selected' : '' %>><%= m %></option>
-        <% }); %>
-      </select>
-    </label>
-
-    <label>
-      Year from
-      <input type="number" name="yearMin" placeholder="<%= bounds.minYear %>" min="<%= bounds.minYear %>" max="<%= bounds.maxYear %>" value="<%= yearMin %>">
-    </label>
-    <label>
-      Year to
-      <input type="number" name="yearMax" placeholder="<%= bounds.maxYear %>" min="<%= bounds.minYear %>" max="<%= bounds.maxYear %>" value="<%= yearMax %>">
-    </label>
-
-    <label>
-      Price from
-      <input type="number" name="priceMin" placeholder="<%= Math.floor(bounds.minPrice / 100) %>" min="0" step="1000" value="<%= priceMin %>">
-    </label>
-    <label>
-      Price to
-      <input type="number" name="priceMax" placeholder="<%= Math.ceil(bounds.maxPrice / 100) %>" min="0" step="1000" value="<%= priceMax %>">
-    </label>
-
-    <label class="search-field">
-      Keyword
-      <input type="text" name="q" placeholder="Name or manufacturer" value="<%= q %>">
-    </label>
-
-    <button class="btn search-btn" type="submit"><span class="icon-search" aria-hidden="true"></span> Search</button>
-    <% if (selectedType || selectedMake || q || yearMin || yearMax || priceMin || priceMax) { %><a class="clear-filters" href="/">Clear filters</a><% } %>
-  </form>
 </section>
+
+<div class="hero-banner-strip">
+  <span>Buy and sell boats with confidence — real listings, real sellers.</span>
+  <a class="btn small" href="/sell/new">Sell your boat</a>
+</div>
 
 <div class="results-heading">
   <h2><%= boats.length %> Boat<%= boats.length === 1 ? '' : 's' %> For Sale</h2>
@@ -98,5 +113,34 @@
     <% }); %>
   </div>
 <% } %>
+
+<section class="brand-strip">
+  <h2>Featured Brands</h2>
+  <div class="brand-pills">
+    <% makes.forEach(function(m) { %>
+      <a class="brand-pill" href="/?make=<%= encodeURIComponent(m) %>"><%= m %></a>
+    <% }); %>
+  </div>
+</section>
+
+<section class="link-columns">
+  <div class="link-column">
+    <h3>Popular Boat Types</h3>
+    <% types.forEach(function(t) { %>
+      <a href="/?type=<%= encodeURIComponent(t) %>"><%= t %>s</a>
+    <% }); %>
+  </div>
+  <div class="link-column">
+    <h3>Popular Manufacturers</h3>
+    <% makes.slice(0, 10).forEach(function(m) { %>
+      <a href="/?make=<%= encodeURIComponent(m) %>"><%= m %></a>
+    <% }); %>
+  </div>
+  <div class="link-column">
+    <h3>Shop By Condition</h3>
+    <a href="/?condition=new">New Boats</a>
+    <a href="/?condition=used">Used Boats</a>
+  </div>
+</section>
 
 <%- include('partials/footer') %>

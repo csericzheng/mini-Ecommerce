@@ -9,7 +9,7 @@ const COVER_IMAGE_SQL = `COALESCE(
 ) AS cover_image`;
 
 router.get('/', (req, res) => {
-  const { type, make, q, yearMin, yearMax, priceMin, priceMax } = req.query;
+  const { type, make, condition, q, yearMin, yearMax, priceMin, priceMax, lengthMin, lengthMax } = req.query;
   let query = `SELECT boats.*, ${COVER_IMAGE_SQL} FROM boats WHERE 1=1`;
   const params = [];
 
@@ -20,6 +20,10 @@ router.get('/', (req, res) => {
   if (make) {
     query += ' AND manufacturer = ?';
     params.push(make);
+  }
+  if (condition) {
+    query += ' AND condition = ?';
+    params.push(condition);
   }
   if (q) {
     query += ' AND (name LIKE ? OR manufacturer LIKE ?)';
@@ -41,25 +45,38 @@ router.get('/', (req, res) => {
     query += ' AND price_cents <= ?';
     params.push(Math.round(parseFloat(priceMax) * 100));
   }
+  if (lengthMin) {
+    query += ' AND length_ft >= ?';
+    params.push(parseInt(lengthMin, 10));
+  }
+  if (lengthMax) {
+    query += ' AND length_ft <= ?';
+    params.push(parseInt(lengthMax, 10));
+  }
   query += ' ORDER BY boats.id';
 
   const boats = db.prepare(query).all(...params);
   const types = db.prepare('SELECT DISTINCT type FROM boats ORDER BY type').all().map((r) => r.type);
   const makes = db.prepare('SELECT DISTINCT manufacturer FROM boats ORDER BY manufacturer').all().map((r) => r.manufacturer);
-  const bounds = db.prepare('SELECT MIN(year) AS minYear, MAX(year) AS maxYear, MIN(price_cents) AS minPrice, MAX(price_cents) AS maxPrice FROM boats').get();
+  const bounds = db.prepare('SELECT MIN(year) AS minYear, MAX(year) AS maxYear, MIN(price_cents) AS minPrice, MAX(price_cents) AS maxPrice, MIN(length_ft) AS minLength, MAX(length_ft) AS maxLength FROM boats').get();
+  const featuredBoat = db.prepare(`SELECT boats.*, ${COVER_IMAGE_SQL} FROM boats ORDER BY views DESC, boats.id LIMIT 1`).get();
 
   res.render('index', {
     boats,
     types,
     makes,
     bounds,
+    featuredBoat,
     selectedType: type || '',
     selectedMake: make || '',
+    selectedCondition: condition || '',
     q: q || '',
     yearMin: yearMin || '',
     yearMax: yearMax || '',
     priceMin: priceMin || '',
     priceMax: priceMax || '',
+    lengthMin: lengthMin || '',
+    lengthMax: lengthMax || '',
   });
 });
 
