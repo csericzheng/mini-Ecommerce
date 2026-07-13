@@ -50,10 +50,21 @@
     </label>
   </div>
 
-  <label>
-    Location
-    <input type="text" name="location" placeholder="City, State" value="<%= boat ? boat.location : '' %>">
-  </label>
+  <div class="form-row">
+    <label>
+      City
+      <input type="text" name="city" value="<%= boat ? boat.city : '' %>" required>
+    </label>
+    <label>
+      Province
+      <select name="province" required>
+        <option value="" disabled <%= !boat || !boat.province ? 'selected' : '' %>>Select a province</option>
+        <% provinces.forEach(function(p) { %>
+          <option value="<%= p %>" <%= boat && boat.province === p ? 'selected' : '' %>><%= p %></option>
+        <% }); %>
+      </select>
+    </label>
+  </div>
 
   <label>
     Image filename (in /public/images/boats/)

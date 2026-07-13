@@ -8,6 +8,7 @@ const db = require('../db/database');
 const { requireAdmin } = require('../lib/middleware');
 const { FIELDS, boatFromForm } = require('../lib/boat-form');
 const { parseJUnitReport } = require('../lib/junit-report');
+const { CANADA_PROVINCES } = require('../lib/canada-provinces');
 
 const router = express.Router();
 
@@ -40,7 +41,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/new', (req, res) => {
-  res.render('admin/form', { boat: null });
+  res.render('admin/form', { boat: null, provinces: CANADA_PROVINCES });
 });
 
 router.post('/new', (req, res) => {
@@ -54,7 +55,7 @@ router.post('/new', (req, res) => {
 router.get('/:id/edit', (req, res) => {
   const boat = db.prepare('SELECT * FROM boats WHERE id = ?').get(req.params.id);
   if (!boat) return res.status(404).render('404');
-  res.render('admin/form', { boat });
+  res.render('admin/form', { boat, provinces: CANADA_PROVINCES });
 });
 
 router.post('/:id/edit', (req, res) => {

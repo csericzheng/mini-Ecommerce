@@ -31,8 +31,8 @@
     <div class="price"><%= formatPrice(boat.price_cents) %></div>
     <ul class="spec-list">
       <li><strong>Boat ID:</strong> #<%= boat.id %></li>
-      <% if (boat.location) { %>
-        <li><strong>Location:</strong> <%= boat.location %></li>
+      <% if (boat.city || boat.province) { %>
+        <li><strong>Location:</strong> <%= [boat.city, boat.province].filter(Boolean).join(', ') %></li>
       <% } %>
       <li><strong>Type:</strong> <%= boat.type %></li>
       <li><strong>Manufacturer:</strong> <%= boat.manufacturer %></li>

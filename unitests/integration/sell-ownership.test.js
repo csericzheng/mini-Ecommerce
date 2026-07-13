@@ -52,7 +52,8 @@ test('the owner can successfully edit their own boat', async () => {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded', Cookie: ownerCookie },
     body: new URLSearchParams({
       name: 'Renamed By Owner', type: 'Sailboat', manufacturer: 'Beneteau', year: '2021',
-      length_ft: '31', capacity: '6', engine_hours: '55', price: '51000', stock: '1', description: 'Updated',
+      length_ft: '31', capacity: '6', engine_hours: '55', price: '51000', stock: '1',
+      city: 'Halifax', province: 'Nova Scotia', description: 'Updated',
     }),
     redirect: 'manual',
   });
@@ -69,7 +70,8 @@ test('an admin can edit a boat they do not own', async () => {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded', Cookie: adminCookie },
     body: new URLSearchParams({
       name: 'Renamed By Admin', type: 'Sailboat', manufacturer: 'Beneteau', year: '2021',
-      length_ft: '31', capacity: '6', engine_hours: '55', price: '51000', stock: '1', description: 'Updated by admin',
+      length_ft: '31', capacity: '6', engine_hours: '55', price: '51000', stock: '1',
+      city: 'Halifax', province: 'Nova Scotia', description: 'Updated by admin',
     }),
     redirect: 'manual',
   });

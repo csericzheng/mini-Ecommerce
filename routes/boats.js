@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require('../db/database');
+const { CANADA_PROVINCES } = require('../lib/canada-provinces');
 
 const router = express.Router();
 
@@ -9,7 +10,7 @@ const COVER_IMAGE_SQL = `COALESCE(
 ) AS cover_image`;
 
 router.get('/', (req, res) => {
-  const { type, make, condition, q, yearMin, yearMax, priceMin, priceMax, lengthMin, lengthMax, engineHoursMin, engineHoursMax, location } = req.query;
+  const { type, make, condition, q, yearMin, yearMax, priceMin, priceMax, lengthMin, lengthMax, engineHoursMin, engineHoursMax, city, province } = req.query;
   let query = `SELECT boats.*, ${COVER_IMAGE_SQL} FROM boats WHERE 1=1`;
   const params = [];
 
@@ -61,9 +62,13 @@ router.get('/', (req, res) => {
     query += ' AND engine_hours <= ?';
     params.push(parseInt(engineHoursMax, 10));
   }
-  if (location) {
-    query += ' AND location LIKE ?';
-    params.push(`%${location}%`);
+  if (city) {
+    query += ' AND city LIKE ?';
+    params.push(`%${city}%`);
+  }
+  if (province) {
+    query += ' AND province = ?';
+    params.push(province);
   }
   query += ' ORDER BY boats.id';
 
@@ -79,6 +84,7 @@ router.get('/', (req, res) => {
     makes,
     bounds,
     featuredBoat,
+    provinces: CANADA_PROVINCES,
     selectedType: type || '',
     selectedMake: make || '',
     selectedCondition: condition || '',
@@ -91,7 +97,8 @@ router.get('/', (req, res) => {
     lengthMax: lengthMax || '',
     engineHoursMin: engineHoursMin || '',
     engineHoursMax: engineHoursMax || '',
-    location: location || '',
+    city: city || '',
+    province: province || '',
   });
 });
 

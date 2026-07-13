@@ -67,6 +67,7 @@ async function createBoatViaSell(baseUrl, cookie, overrides = {}) {
   const fields = {
     name: 'Test Boat', type: 'Sailboat', manufacturer: 'Beneteau', year: '2020',
     length_ft: '30', capacity: '6', engine_hours: '50', price: '50000', stock: '1',
+    city: 'Halifax', province: 'Nova Scotia',
     description: 'A boat for testing.', image_file: 'placeholder.svg', ...overrides,
   };
   const response = await fetch(`${baseUrl}/sell/new`, {
@@ -87,7 +88,7 @@ async function createBoatViaAdmin(baseUrl, adminCookie, overrides = {}) {
   const fields = {
     name: `Admin Boat ${crypto.randomUUID()}`, type: 'Sailboat', manufacturer: 'Beneteau', year: '2020',
     length_ft: '30', capacity: '6', engine_hours: '50', price: '50000', stock: '1',
-    status: 'available', condition: 'new',
+    status: 'available', condition: 'new', city: 'Halifax', province: 'Nova Scotia',
     description: 'A dealer boat for testing.', image_file: 'placeholder.svg', ...overrides,
   };
   await fetch(`${baseUrl}/admin/new`, {

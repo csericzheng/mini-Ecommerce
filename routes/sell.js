@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('../db/database');
 const { requireAuth } = require('../lib/middleware');
 const { FIELDS, boatFromForm } = require('../lib/boat-form');
+const { CANADA_PROVINCES } = require('../lib/canada-provinces');
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/new', (req, res) => {
-  res.render('sell', { boat: null });
+  res.render('sell', { boat: null, provinces: CANADA_PROVINCES });
 });
 
 router.post('/new', (req, res) => {
@@ -40,7 +41,7 @@ router.get('/:id/edit', (req, res) => {
   const boat = db.prepare('SELECT * FROM boats WHERE id = ?').get(req.params.id);
   if (!boat) return res.status(404).render('404');
   if (boat.owner_id !== req.session.userId && !isAdmin(res)) return res.status(403).render('403');
-  res.render('sell', { boat });
+  res.render('sell', { boat, provinces: CANADA_PROVINCES });
 });
 
 router.post('/:id/edit', (req, res) => {

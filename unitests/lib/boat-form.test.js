@@ -13,7 +13,8 @@ test('boatFromForm parses numeric fields and converts price to cents', () => {
     engine_hours: '150',
     price: '99999.99',
     stock: '3',
-    location: 'Miami, FL',
+    city: 'Halifax',
+    province: 'Nova Scotia',
     description: 'A fine boat',
     image_file: 'custom.jpg',
   });
@@ -28,7 +29,8 @@ test('boatFromForm parses numeric fields and converts price to cents', () => {
     engine_hours: 150,
     price_cents: 9999999,
     stock: 3,
-    location: 'Miami, FL',
+    city: 'Halifax',
+    province: 'Nova Scotia',
     description: 'A fine boat',
     image_file: 'custom.jpg',
   });
@@ -68,26 +70,10 @@ test('boatFromForm defaults engine_hours to 0 when missing or non-numeric', () =
   assert.equal(boat.engine_hours, 0);
 });
 
-test('boatFromForm defaults location to an empty string when missing', () => {
-  const boat = boatFromForm({
-    name: 'Test Boat',
-    type: 'Sailboat',
-    manufacturer: 'Beneteau',
-    year: '2020',
-    length_ft: '32',
-    capacity: '6',
-    price: '1000',
-    stock: '1',
-    description: 'desc',
-  });
-
-  assert.equal(boat.location, '');
-});
-
 test('FIELDS lists exactly the columns boatFromForm produces (minus price->price_cents)', () => {
   const boat = boatFromForm({
     name: 'x', type: 'x', manufacturer: 'x', year: '2020', length_ft: '10',
-    capacity: '2', engine_hours: '5', price: '10', stock: '1', location: 'x', description: 'x', image_file: 'x',
+    capacity: '2', engine_hours: '5', price: '10', stock: '1', city: 'x', province: 'x', description: 'x', image_file: 'x',
   });
   assert.deepEqual(new Set(FIELDS), new Set(Object.keys(boat)));
 });

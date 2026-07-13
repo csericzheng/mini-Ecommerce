@@ -58,11 +58,22 @@
           <label>Engine Hrs From <input type="number" name="engineHoursMin" placeholder="<%= bounds.minEngineHours %>" min="0" value="<%= engineHoursMin %>"></label>
           <label>Engine Hrs To <input type="number" name="engineHoursMax" placeholder="<%= bounds.maxEngineHours %>" min="0" value="<%= engineHoursMax %>"></label>
         </div>
-        <label>Location <input type="text" name="location" placeholder="City or State" value="<%= location %>"></label>
+        <div class="hero-filter-row">
+          <label>City <input type="text" name="city" placeholder="City" value="<%= city %>"></label>
+          <label>
+            Province
+            <select name="province">
+              <option value="">All Provinces</option>
+              <% provinces.forEach(function(p) { %>
+                <option value="<%= p %>" <%= p === province ? 'selected' : '' %>><%= p %></option>
+              <% }); %>
+            </select>
+          </label>
+        </div>
         <label>Keyword <input type="text" name="q" placeholder="Name or manufacturer" value="<%= q %>"></label>
       </details>
 
-      <% if (selectedType || selectedMake || selectedCondition || q || yearMin || yearMax || priceMin || priceMax || lengthMin || lengthMax || engineHoursMin || engineHoursMax || location) { %>
+      <% if (selectedType || selectedMake || selectedCondition || q || yearMin || yearMax || priceMin || priceMax || lengthMin || lengthMax || engineHoursMin || engineHoursMax || city || province) { %>
         <a class="clear-filters" href="/">Clear filters</a>
       <% } %>
     </form>
