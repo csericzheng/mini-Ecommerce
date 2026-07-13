@@ -10,7 +10,8 @@
     "seed": "node scripts/seed.js",
     "fetch-images": "node scripts/fetch-images.js",
     "import-crownline": "node scripts/import-crownline.js",
-    "assign-boat-owners": "node scripts/assign-boat-owners.js"
+    "assign-boat-owners": "node scripts/assign-boat-owners.js",
+    "assign-boat-locations": "node scripts/assign-boat-locations.js"
   },
   "engines": {
     "node": ">=24.0.0"
